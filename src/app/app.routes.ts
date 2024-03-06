@@ -6,7 +6,14 @@ export const routes: Routes = [
     path: "home",
     component: HomeComponent,
   },
-
+  {
+    path: "categories",
+    loadComponent() {
+      return import("./category/category.component").then(
+        (a) => a.CategoryComponent
+      );
+    },
+  },
   {
     path: "",
     redirectTo: "/home",

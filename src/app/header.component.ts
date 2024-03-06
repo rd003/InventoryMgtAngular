@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { MatToolbarModule } from "@angular/material/toolbar";
 // import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
+import { RouterModule } from "@angular/router";
 @Component({
   selector: "app-header",
   standalone: true,
-  imports: [MatToolbarModule, MatButtonModule],
+  imports: [MatToolbarModule, MatButtonModule, RouterModule],
   template: `
     <p>
       <mat-toolbar color="primary">
@@ -13,10 +14,10 @@ import { MatButtonModule } from "@angular/material/button";
         <button mat-button routerLink="/home" routerLinkActive="active">
           Home
         </button>
-        <button mat-button routerLink="" routerLinkActive="active">
+        <button mat-button routerLink="/categories" routerLinkActive="active">
           Category
         </button>
-        <button mat-button routerLink="" routerLinkActive="active">
+        <button mat-button routerLink="/products" routerLinkActive="active">
           Product
         </button>
         <span class="example-spacer"></span>
@@ -51,7 +52,7 @@ import { MatButtonModule } from "@angular/material/button";
       }
 
       .active {
-        background: #003a85;
+        background: #7e00b6;
       }
     `,
   ],
