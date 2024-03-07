@@ -22,7 +22,11 @@ import { CategoryModel } from "./category.model";
       (submit)="onSubmit($event)"
       (reset)="onReset()"
     />
-    <app-category-list [categories]="categories" />
+    <app-category-list
+      [categories]="categories"
+      (edit)="onEdit($event)"
+      (delete)="onDelete($event)"
+    />
   `,
 })
 export class CategoryComponent implements OnInit {
@@ -50,6 +54,14 @@ export class CategoryComponent implements OnInit {
   }
   onReset() {
     this.categoryToUpdate = null;
+  }
+
+  onEdit(category: CategoryModel) {
+    this.categoryToUpdate = category;
+  }
+
+  onDelete(category: CategoryModel) {
+    alert(JSON.stringify(category));
   }
 
   ngOnInit() {}

@@ -15,15 +15,14 @@ import { CategoryModel } from "../category.model";
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatTableModule, MatButtonModule, MatIconModule],
   standalone: true,
-  styles: [
-    `
-      :host {
-        margin-top: 10px;
-      }
-    `,
-  ],
+  styles: [``],
   template: `
-    <table mat-table [dataSource]="categories" class="mat-elevation-z8">
+    <table
+      style=" margin-top: 1.5rem;"
+      mat-table
+      [dataSource]="categories"
+      class="mat-elevation-z8"
+    >
       <ng-container matColumnDef="categoryName">
         <th mat-header-cell *matHeaderCellDef>Category</th>
         <td mat-cell *matCellDef="let element">{{ element.categoryName }}</td>
@@ -42,11 +41,21 @@ import { CategoryModel } from "../category.model";
       <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef>Action</th>
         <td mat-cell *matCellDef="let element">
-          <button mat-mini-fab color="primary" aria-label="Edit">
+          <button
+            mat-mini-fab
+            color="primary"
+            aria-label="Edit"
+            (click)="edit.emit(element)"
+          >
             <mat-icon>edit</mat-icon>
           </button>
 
-          <button mat-mini-fab color="warn" aria-label="Delete">
+          <button
+            mat-mini-fab
+            color="warn"
+            aria-label="Delete"
+            (click)="delete.emit(element)"
+          >
             <mat-icon>delete</mat-icon>
           </button>
         </td>
