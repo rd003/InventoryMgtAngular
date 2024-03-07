@@ -16,11 +16,16 @@ import { CategoryModel } from "./category.model";
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <h1>Categories</h1>
-    <app-category-form [categories]="categories" />
+    <app-category-form
+      [categories]="categories"
+      [updateFormData]="categoryToUpdate"
+      (submit)="onSubmit($event)"
+      (reset)="onReset()"
+    />
   `,
 })
 export class CategoryComponent implements OnInit {
-  ngOnInit() {}
+  categoryToUpdate: CategoryModel | null = null;
   categories: CategoryModel[] = [
     {
       id: 1,
@@ -37,4 +42,14 @@ export class CategoryComponent implements OnInit {
       categoryId: null,
     },
   ];
+
+  onSubmit(category: CategoryModel) {
+    alert(JSON.stringify(category));
+    this.categoryToUpdate = null;
+  }
+  onReset() {
+    this.categoryToUpdate = null;
+  }
+
+  ngOnInit() {}
 }

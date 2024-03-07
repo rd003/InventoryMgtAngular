@@ -19,6 +19,7 @@ import {
 } from "@angular/forms";
 import { CategoryModel } from "../category.model";
 import { NgFor } from "@angular/common";
+import { HttpEvent } from "@angular/common/http";
 @Component({
   selector: "app-category-form",
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,7 +39,7 @@ import { NgFor } from "@angular/common";
       style="display: inline-flex;gap:10px;align-items:center"
       class="category-form"
       [formGroup]="categoryForm"
-      (ngSubmit)="onPost()"
+      (ngSubmit)="onPost($event)"
     >
       <input type="hidden" formControlName="id" />
 
@@ -60,15 +61,32 @@ import { NgFor } from "@angular/common";
           >
         </mat-select>
       </mat-form-field>
-      <button mat-raised-button color="primary">Save</button>
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="categoryForm.invalid"
+      >
+        Save
+      </button>
+
+      <button
+        type="button"
+        mat-raised-button
+        color="accent"
+        (click)="onReset()"
+      >
+        Reset
+      </button>
     </form>
   `,
 })
 export class CategoryFormComponent {
   private fb = inject(FormBuilder);
 
-  @Input() set updateFormData(category: CategoryModel) {
-    this.categoryForm.patchValue(category);
+  @Input({ required: true }) set updateFormData(
+    category: CategoryModel | null
+  ) {
+    if (category) this.categoryForm.patchValue(category);
   }
   @Input({ required: true }) categories!: CategoryModel[];
   @Output() submit = new EventEmitter<CategoryModel>();
@@ -80,7 +98,8 @@ export class CategoryFormComponent {
     categoryId: [0],
   });
 
-  onPost() {
+  onPost(event: any) {
+    event.stopPropagation();
     const category = Object.assign(this.categoryForm.value);
     this.submit.emit(category);
     this.categoryForm.reset();
