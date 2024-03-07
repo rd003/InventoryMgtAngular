@@ -22,6 +22,7 @@ import { CategoryModel } from "./category.model";
       (submit)="onSubmit($event)"
       (reset)="onReset()"
     />
+    <app-category-list [categories]="categories" />
   `,
 })
 export class CategoryComponent implements OnInit {

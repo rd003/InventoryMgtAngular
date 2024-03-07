@@ -98,7 +98,7 @@ export class CategoryFormComponent {
     categoryId: [0],
   });
 
-  onPost(event: any) {
+  onPost(event: Event) {
     event.stopPropagation();
     const category = Object.assign(this.categoryForm.value);
     this.submit.emit(category);
@@ -107,6 +107,7 @@ export class CategoryFormComponent {
 
   onReset() {
     this.categoryForm.reset();
+    this.reset.emit();
   }
 
   trackById = (index: number, category: CategoryModel) => category.id;
