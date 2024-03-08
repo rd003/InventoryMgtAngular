@@ -38,26 +38,35 @@ import { CategoryModel } from "../category.model";
         <td mat-cell *matCellDef="let element">{{ element.updateDate }}</td>
       </ng-container>
 
+      <ng-container matColumnDef="parentCategory">
+        <th mat-header-cell *matHeaderCellDef>Parent Category</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.parentCategoryName }}
+        </td>
+      </ng-container>
+
       <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef>Action</th>
         <td mat-cell *matCellDef="let element">
-          <button
-            mat-mini-fab
-            color="primary"
-            aria-label="Edit"
-            (click)="edit.emit(element)"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
+          <div style="display: flex;gap:5px;align-items:center">
+            <button
+              mat-mini-fab
+              color="primary"
+              aria-label="Edit"
+              (click)="edit.emit(element)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
 
-          <button
-            mat-mini-fab
-            color="warn"
-            aria-label="Delete"
-            (click)="delete.emit(element)"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
+            <button
+              mat-mini-fab
+              color="warn"
+              aria-label="Delete"
+              (click)="delete.emit(element)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
         </td>
       </ng-container>
 
@@ -74,6 +83,7 @@ export class CategoryListComponent {
     "createDate",
     "updateDate",
     "categoryName",
+    "parentCategory",
     "action",
   ];
 }

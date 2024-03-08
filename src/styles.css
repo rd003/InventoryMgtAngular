@@ -9,3 +9,10 @@ body {
   padding: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+.spinner-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+}

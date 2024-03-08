@@ -25,7 +25,7 @@ import { RouterModule } from "@angular/router";
         <button mat-button>Login</button>
 
         <a
-          href="https://github.com/rd003/"
+          href="https://github.com/rd003/InventoryMgtAngular"
           target="_blank"
           mat-icon-button
           class="example-icon favorite-icon"
