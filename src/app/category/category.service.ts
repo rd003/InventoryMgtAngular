@@ -16,7 +16,7 @@ export class CategoryService {
   }
 
   updateCategory(category: CategoryModel): Observable<CategoryModel> {
-    const url = `${this.apiUrl}/${category.id}`;
+    const url = `${this.apiUrl}/${category.id}1`;
     return this.http.put<CategoryModel>(url, category);
   }
 

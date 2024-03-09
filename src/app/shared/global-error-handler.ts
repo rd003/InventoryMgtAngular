@@ -1,8 +1,15 @@
-import { ErrorHandler, Injectable } from "@angular/core";
+import { ErrorHandler, Injectable, inject } from "@angular/core";
+import { NotificationService } from "./notification.service";
 
 @Injectable()
 export class GlobalErrorHander implements ErrorHandler {
+  private notificationService = inject(NotificationService);
   handleError(error: any): void {
-    console.log(`💩:${error}`);
+    console.error(`💩:${error}`);
+    this.notificationService.send({
+      id: "",
+      message: "Something went wrong!",
+      severity: "error",
+    });
   }
 }

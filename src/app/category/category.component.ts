@@ -11,6 +11,7 @@ import { provideComponentStore } from "@ngrx/component-store";
 import { CategoryStore } from "./ui/category.store";
 import { AsyncPipe, NgFor, NgIf } from "@angular/common";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { NotificationService } from "../shared/notification.service";
 
 @Component({
   selector: "app-category",
@@ -35,23 +36,23 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
       </div>
 
       <ng-container *ngIf="vm$ | async as vm">
-        <ng-container *ngIf="vm.error; else noError">
-          {{ vm.error }}
-        </ng-container>
-        <ng-template #noError>
-          <app-category-form
-            [categories]="vm.categories"
-            [updateFormData]="categoryToUpdate"
-            (submit)="onSubmit($event)"
-            (reset)="onReset()"
-          />
-          <ng-container *ngIf="vm.categories">
-            <app-category-list
-              [categories]="vm.categories"
-              (edit)="onEdit($event)"
-              (delete)="onDelete($event)"
-            />
-          </ng-container>
+        <!-- <ng-container *ngIf="vm.error; else noError">
+          {{ vm.error }} 
+        </ng-container>-->
+        <app-category-form
+          [categories]="vm.categories"
+          [updateFormData]="categoryToUpdate"
+          (submit)="onSubmit($event)"
+          (reset)="onReset()"
+        />
+        <app-category-list
+          *ngIf="vm.categories && vm.categories.length > 0; else noRecords"
+          [categories]="vm.categories"
+          (edit)="onEdit($event)"
+          (delete)="onDelete($event)"
+        />
+        <ng-template #noRecords>
+          <p style="margin-top:20px;font-size:21px">No records found</p>
         </ng-template>
       </ng-container>
     </ng-container>
@@ -59,12 +60,17 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 })
 export class CategoryComponent implements OnInit {
   categoryStore = inject(CategoryStore);
+  notificationService = inject(NotificationService);
   vm$ = this.categoryStore.vm$;
   categoryToUpdate: CategoryModel | null = null;
 
   onSubmit(category: CategoryModel) {
-    if (category.id == 0) this.categoryStore.saveCategory(category);
-    else this.categoryStore.updateCategory(category);
+    this.notificationService.send({
+      message: "saved successfully",
+      severity: "success",
+    });
+    // if (category.id == 0) this.categoryStore.saveCategory(category);
+    // else this.categoryStore.updateCategory(category);
 
     this.categoryToUpdate = null;
   }
@@ -77,9 +83,14 @@ export class CategoryComponent implements OnInit {
   }
 
   onDelete(category: CategoryModel) {
-    if (confirm("Are you sure?")) {
-      this.categoryStore.deleteCategory(category.id);
-    }
+    this.notificationService.send({
+      id: "",
+      message: "hello",
+      severity: "info",
+    });
+    // if (confirm("Are you sure?")) {
+    //   this.categoryStore.deleteCategory(category.id);
+    // }
   }
 
   ngOnInit() {}
