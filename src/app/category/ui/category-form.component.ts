@@ -54,6 +54,7 @@ import { HttpEvent } from "@angular/common/http";
       <mat-form-field style="width: 400px;">
         <mat-label>Parent Category</mat-label>
         <mat-select formControlName="categoryId">
+          <mat-option value="null">None</mat-option>
           <mat-option
             *ngFor="let category of categories; trackBy: trackById"
             [value]="category.id"

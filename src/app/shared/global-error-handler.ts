@@ -7,7 +7,6 @@ export class GlobalErrorHander implements ErrorHandler {
   handleError(error: any): void {
     console.error(`💩:${error}`);
     this.notificationService.send({
-      id: "",
       message: "Something went wrong!",
       severity: "error",
     });

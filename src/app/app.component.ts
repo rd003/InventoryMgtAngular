@@ -36,4 +36,6 @@ import { NotificationComponent } from "./shared/notification.component";
     `,
   ],
 })
-export class AppComponent {}
+export class AppComponent {
+  constructor() {}
+}

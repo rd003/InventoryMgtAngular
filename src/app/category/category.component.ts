@@ -65,13 +65,15 @@ export class CategoryComponent implements OnInit {
   categoryToUpdate: CategoryModel | null = null;
 
   onSubmit(category: CategoryModel) {
+    if (category.id > 0) this.categoryStore.updateCategory(category);
+    else {
+      category.id = 0;
+      this.categoryStore.saveCategory(category);
+    }
     this.notificationService.send({
       message: "saved successfully",
       severity: "success",
     });
-    // if (category.id == 0) this.categoryStore.saveCategory(category);
-    // else this.categoryStore.updateCategory(category);
-
     this.categoryToUpdate = null;
   }
   onReset() {
@@ -83,14 +85,13 @@ export class CategoryComponent implements OnInit {
   }
 
   onDelete(category: CategoryModel) {
-    this.notificationService.send({
-      id: "",
-      message: "hello",
-      severity: "info",
-    });
-    // if (confirm("Are you sure?")) {
-    //   this.categoryStore.deleteCategory(category.id);
-    // }
+    if (confirm("Are you sure?")) {
+      this.categoryStore.deleteCategory(category.id);
+      this.notificationService.send({
+        message: "Deleted successfully",
+        severity: "success",
+      });
+    }
   }
 
   ngOnInit() {}
