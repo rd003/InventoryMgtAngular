@@ -65,6 +65,7 @@ export class CategoryComponent implements OnInit {
   categoryToUpdate: CategoryModel | null = null;
 
   onSubmit(category: CategoryModel) {
+    if (typeof category.categoryId === "string") category.categoryId = null;
     if (category.id > 0) this.categoryStore.updateCategory(category);
     else {
       category.id = 0;

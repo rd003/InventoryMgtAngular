@@ -9,11 +9,12 @@ import { MatTableModule } from "@angular/material/table";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { CategoryModel } from "../category.model";
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "app-category-list",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTableModule, MatButtonModule, MatIconModule],
+  imports: [MatTableModule, MatButtonModule, MatIconModule, DatePipe],
   standalone: true,
   styles: [``],
   template: `
@@ -28,20 +29,24 @@ import { CategoryModel } from "../category.model";
         <td mat-cell *matCellDef="let element">{{ element.categoryName }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="createDate">
-        <th mat-header-cell *matHeaderCellDef>Create Date</th>
-        <td mat-cell *matCellDef="let element">{{ element.createDate }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="updateDate">
-        <th mat-header-cell *matHeaderCellDef>Update Date</th>
-        <td mat-cell *matCellDef="let element">{{ element.updateDate }}</td>
-      </ng-container>
-
       <ng-container matColumnDef="parentCategory">
         <th mat-header-cell *matHeaderCellDef>Parent Category</th>
         <td mat-cell *matCellDef="let element">
           {{ element.parentCategoryName }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createDate">
+        <th mat-header-cell *matHeaderCellDef>Create Date</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.createDate | date }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="updateDate">
+        <th mat-header-cell *matHeaderCellDef>Update Date</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.updateDate | date }}
         </td>
       </ng-container>
 
@@ -80,10 +85,10 @@ export class CategoryListComponent {
   @Output() edit = new EventEmitter<CategoryModel>();
   @Output() delete = new EventEmitter<CategoryModel>();
   displayedColumns: string[] = [
-    "createDate",
-    "updateDate",
     "categoryName",
     "parentCategory",
+    "createDate",
+    "updateDate",
     "action",
   ];
 }
