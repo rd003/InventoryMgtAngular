@@ -30,7 +30,11 @@ export class CategoryService {
     return this.http.get<CategoryModel>(url);
   }
 
-  getCategories(): Observable<CategoryModel[]> {
-    return this.http.get<CategoryModel[]>(this.apiUrl);
+  getCategories(searchTerm?: string): Observable<CategoryModel[]> {
+    let url = this.apiUrl;
+    if (searchTerm) {
+      url += `?searchTerm=${searchTerm}`;
+    }
+    return this.http.get<CategoryModel[]>(url);
   }
 }
