@@ -100,7 +100,8 @@ export class CategoryComponent implements OnInit {
   }
 
   onFilter(searchTerm: string) {
-    console.log(searchTerm);
+    this.categoryStore.setSearchTerm(searchTerm);
+    // console.log(searchTerm);
   }
 
   ngOnInit() {}
