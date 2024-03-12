@@ -12,6 +12,7 @@ import { CategoryStore } from "./ui/category.store";
 import { AsyncPipe, NgFor, NgIf } from "@angular/common";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { NotificationService } from "../shared/notification.service";
+import { CategoryFilterComponent } from "./ui/category-filter.component";
 
 @Component({
   selector: "app-category",
@@ -23,6 +24,7 @@ import { NotificationService } from "../shared/notification.service";
     NgIf,
     NgFor,
     MatProgressSpinnerModule,
+    CategoryFilterComponent,
   ],
   styles: [``],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,6 +47,8 @@ import { NotificationService } from "../shared/notification.service";
           (submit)="onSubmit($event)"
           (reset)="onReset()"
         />
+        <app-category-filter (filter)="onFilter($event)" />
+
         <app-category-list
           *ngIf="vm.categories && vm.categories.length > 0; else noRecords"
           [categories]="vm.categories"
@@ -93,6 +97,10 @@ export class CategoryComponent implements OnInit {
         severity: "success",
       });
     }
+  }
+
+  onFilter(searchTerm: string) {
+    console.log(searchTerm);
   }
 
   ngOnInit() {}

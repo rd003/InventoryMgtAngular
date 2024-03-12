@@ -14,12 +14,14 @@ interface CategoryState {
   categories: CategoryModel[];
   loading: boolean;
   error: HttpErrorResponse | null;
+  searchTerm: string;
 }
 
 const initialState = {
   categories: [],
   loading: false,
   error: null,
+  searchTerm: "",
 };
 
 @Injectable()
@@ -29,6 +31,7 @@ export class CategoryStore
 {
   private categoryService = inject(CategoryService);
   private loading$ = this.select((a) => a.loading);
+  private searchTerm$ = this.select((a) => a.searchTerm);
   private categories$ = this.select((a) => a.categories);
   private error$ = this.select((a) => a.error);
 
@@ -50,6 +53,11 @@ export class CategoryStore
     // called once after state has been first initialized
     this.loadCategories();
   }
+
+  readonly setSearchTerm = this.updater((state, searchTerm: string) => ({
+    ...state,
+    searchTerm,
+  }));
 
   private readonly setLoading = this.updater((state) => ({
     ...state,
@@ -103,10 +111,14 @@ export class CategoryStore
     trigger$.pipe(
       tap((_) => this.setLoading()),
       exhaustMap((_) =>
-        this.categoryService.getCategories().pipe(
-          tapResponse(
-            (categories: CategoryModel[]) => this.addCategories(categories),
-            (error: HttpErrorResponse) => this.setError(error)
+        this.searchTerm$.pipe(
+          switchMap((sTerm) =>
+            this.categoryService.getCategories(sTerm).pipe(
+              tapResponse(
+                (categories: CategoryModel[]) => this.addCategories(categories),
+                (error: HttpErrorResponse) => this.setError(error)
+              )
+            )
           )
         )
       )
