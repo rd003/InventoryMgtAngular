@@ -84,6 +84,7 @@ export class CategoryListComponent {
   @Input({ required: true }) categories!: CategoryModel[];
   @Output() edit = new EventEmitter<CategoryModel>();
   @Output() delete = new EventEmitter<CategoryModel>();
+
   displayedColumns: string[] = [
     "categoryName",
     "parentCategory",
