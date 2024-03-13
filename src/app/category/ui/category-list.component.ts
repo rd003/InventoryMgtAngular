@@ -39,14 +39,14 @@ import { DatePipe } from "@angular/common";
       <ng-container matColumnDef="createDate">
         <th mat-header-cell *matHeaderCellDef>Create Date</th>
         <td mat-cell *matCellDef="let element">
-          {{ element.createDate | date }}
+          {{ element.createDate | date : "dd-MMM-yyy HH:MM" }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="updateDate">
         <th mat-header-cell *matHeaderCellDef>Update Date</th>
         <td mat-cell *matCellDef="let element">
-          {{ element.updateDate | date }}
+          {{ element.updateDate | date : "dd-MMM-yyy HH:MM" }}
         </td>
       </ng-container>
 
