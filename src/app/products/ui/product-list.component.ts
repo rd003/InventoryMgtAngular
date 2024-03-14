@@ -5,35 +5,39 @@ import {
   Input,
   Output,
 } from "@angular/core";
+import { Product } from "../product.model";
 import { MatTableModule } from "@angular/material/table";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
-import { CategoryModel } from "../category.model";
 import { DatePipe } from "@angular/common";
-import { Product } from "../../products/product.model";
 
 @Component({
-  selector: "app-category-list",
+  selector: "app-product-list",
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatTableModule, MatButtonModule, MatIconModule, DatePipe],
-  standalone: true,
   styles: [``],
   template: `
     <table
       style=" margin-top: 1.5rem;"
       mat-table
-      [dataSource]="categories"
+      [dataSource]="products"
       class="mat-elevation-z8"
     >
+      <ng-container matColumnDef="productName">
+        <th mat-header-cell *matHeaderCellDef>Product</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.productName }}
+        </td>
+      </ng-container>
       <ng-container matColumnDef="categoryName">
         <th mat-header-cell *matHeaderCellDef>Category</th>
         <td mat-cell *matCellDef="let element">{{ element.categoryName }}</td>
       </ng-container>
-
-      <ng-container matColumnDef="parentCategory">
-        <th mat-header-cell *matHeaderCellDef>Parent Category</th>
+      <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef>Price</th>
         <td mat-cell *matCellDef="let element">
-          {{ element.parentCategoryName }}
+          {{ element.price }}
         </td>
       </ng-container>
 
@@ -81,16 +85,16 @@ import { Product } from "../../products/product.model";
     </table>
   `,
 })
-export class CategoryListComponent {
-  @Input({ required: true }) categories!: CategoryModel[];
-  @Output() edit = new EventEmitter<CategoryModel>();
-  @Output() delete = new EventEmitter<CategoryModel>();
+export class ProductListComponent {
+  @Input({ required: true }) products!: Product[];
+  @Output() delete = new EventEmitter<Product>();
+  @Output() edit = new EventEmitter<Product>();
 
-  displayedColumns: string[] = [
+  displayedColumns = [
+    "productName",
+    "price",
     "categoryName",
-    "parentCategory",
     "createDate",
     "updateDate",
-    "action",
   ];
 }

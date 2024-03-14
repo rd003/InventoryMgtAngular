@@ -142,6 +142,47 @@ export class ProductStore
     totalPages,
   }));
 
+  readonly addProduct = this.effect<Product>((product$) =>
+    product$.pipe(
+      tap(this.setLoading),
+      switchMap((product) =>
+        this.productService.addProduct(product).pipe(
+          tapResponse(
+            (response) => this.addSingleProductToStore(response),
+            (error: HttpErrorResponse) => this.setError(error)
+          )
+        )
+      )
+    )
+  );
+
+  readonly updateProduct = this.effect<Product>((product$) =>
+    product$.pipe(
+      tap(this.setLoading),
+      switchMap((product) =>
+        this.productService.updateProduct(product).pipe(
+          tapResponse(
+            (response) => this.updateStoresProduct(response),
+            (error: HttpErrorResponse) => this.setError(error)
+          )
+        )
+      )
+    )
+  );
+  readonly deleteProduct = this.effect<number>((product$) =>
+    product$.pipe(
+      tap(this.setLoading),
+      switchMap((id) =>
+        this.productService.deleteProduct(id).pipe(
+          tapResponse(
+            () => this.deleteStoresProduct(id),
+            (error: HttpErrorResponse) => this.setError(error)
+          )
+        )
+      )
+    )
+  );
+
   readonly loadProducts = this.effect<void>((trigger$) =>
     trigger$.pipe(
       tap(() => this.setLoading()),
