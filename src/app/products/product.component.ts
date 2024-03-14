@@ -47,7 +47,8 @@ export class ProductComponent {
   vm$ = this.productStore.vm$;
 
   onPageSelect(pageData: { page: number; limit: number }) {
-    console.log(pageData);
+    this.productStore.setPage(pageData.page);
+    this.productStore.setPageLimit(pageData.limit);
   }
 
   onSearch(search: string | null) {
