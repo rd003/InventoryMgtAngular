@@ -1,8 +1,9 @@
 import { Injectable, inject } from "@angular/core";
 import { environment } from "../../environments/environment.development";
-import { Product } from "./product.model";
-import { Observable } from "rxjs";
-import { HttpClient } from "@angular/common/http";
+import { PaginatedProduct, Product } from "./product.model";
+import { Observable, map } from "rxjs";
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { PaginationModel } from "../shared/models/pagination.model";
 
 @Injectable({
   providedIn: "root",
@@ -30,7 +31,37 @@ export class ProductService {
     return this.#http.get<Product>(url);
   }
 
-  getProducts(): Observable<Product> {
-    return this.#http.get<Product>(this.#baseUrl);
+  getProducts(
+    page = 1,
+    limit = 4,
+    searchTerm: string | null = null,
+    sortColumn: string | null = null,
+    sortDirection: string | null = null
+  ): Observable<PaginatedProduct> {
+    let parameters = new HttpParams();
+    parameters.set("page", page);
+    parameters.set("limit", limit);
+    if (searchTerm) parameters.set("searchTerm", searchTerm);
+    if (sortColumn) parameters.set("sortColumn", sortColumn);
+    if (sortDirection) parameters.set("sortDirection", sortDirection);
+    return this.#http
+      .get(this.#baseUrl, {
+        observe: "response",
+        params: parameters,
+      })
+      .pipe(
+        map((response) => {
+          const paginationHeader = response.headers.get(
+            "X-Pagination"
+          ) as string;
+          const paginationData: PaginationModel = JSON.parse(paginationHeader);
+          const products = response.body as Product[]; // Products from the response body
+          const productResponse: PaginatedProduct = {
+            ...paginationData,
+            products,
+          };
+          return productResponse;
+        })
+      );
   }
 }

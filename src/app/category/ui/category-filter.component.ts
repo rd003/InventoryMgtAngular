@@ -26,12 +26,11 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
   `,
   styles: [
     `
-   :host {
+      :host {
         margin-top: 10px;
-        display:block;
+        display: block;
       }
-  :
-  `,
+    `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

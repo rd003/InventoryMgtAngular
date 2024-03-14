@@ -19,7 +19,6 @@ import {
 } from "@angular/forms";
 import { CategoryModel } from "../category.model";
 import { NgFor } from "@angular/common";
-import { HttpEvent } from "@angular/common/http";
 @Component({
   selector: "app-category-form",
   changeDetection: ChangeDetectionStrategy.OnPush,

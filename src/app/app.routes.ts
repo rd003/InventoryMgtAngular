@@ -15,6 +15,14 @@ export const routes: Routes = [
     },
   },
   {
+    path: "products",
+    loadComponent() {
+      return import("./products/product.component").then(
+        (a) => a.ProductComponent
+      );
+    },
+  },
+  {
     path: "",
     redirectTo: "/home",
     pathMatch: "full",
