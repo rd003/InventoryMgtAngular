@@ -9,6 +9,7 @@ import { PaginatedProduct, Product } from "./product.model";
 import { HttpErrorResponse } from "@angular/common/http";
 import { combineLatest, exhaustMap, switchMap, tap } from "rxjs";
 import { ProductService } from "./product.service";
+
 interface productState {
   products: Product[];
   searchTerm: string | null;
@@ -16,7 +17,7 @@ interface productState {
   sortDirection: string | null;
   page: number;
   limit: number;
-  totalPages: number;
+  totalRecords: number;
   loading: boolean;
   error: HttpErrorResponse | null;
 }
@@ -28,7 +29,7 @@ const initialState: productState = {
   sortDirection: null,
   page: 1,
   limit: 4,
-  totalPages: 0,
+  totalRecords: 0,
   loading: false,
   error: null,
 };
@@ -45,7 +46,7 @@ export class ProductStore
   private readonly error$ = this.select((a) => a.error);
   private readonly page$ = this.select((a) => a.page);
   private readonly limit$ = this.select((a) => a.limit);
-  private readonly totalPages$ = this.select((a) => a.totalPages);
+  private readonly totalRecords$ = this.select((a) => a.totalRecords);
   private readonly searchTerm$ = this.select((a) => a.searchTerm);
   private readonly sortColumn$ = this.select((a) => a.sortColumn);
   private readonly sortDirection$ = this.select((a) => a.sortDirection);
@@ -57,7 +58,7 @@ export class ProductStore
     sortDirection: this.sortDirection$,
     page: this.page$,
     limit: this.limit$,
-    totalPages: this.totalPages$,
+    totalRecords: this.totalRecords$,
     loading: this.loading$,
     error: this.error$,
   });
@@ -137,9 +138,9 @@ export class ProductStore
     limit,
   }));
 
-  readonly setTotalPages = this.updater((state, totalPages: number) => ({
+  readonly setTotalRecords = this.updater((state, totalRecords: number) => ({
     ...state,
-    totalPages,
+    totalRecords,
   }));
 
   readonly addProduct = this.effect<Product>((product$) =>
@@ -231,6 +232,6 @@ export class ProductStore
     this.addMultipleProductToStore(response.products);
     this.setPage(response.Page);
     this.setPageLimit(response.Limit);
-    this.setTotalPages(response.TotalPages);
+    this.setTotalRecords(response.TotalRecords);
   };
 }
