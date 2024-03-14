@@ -52,7 +52,7 @@ export class ProductComponent {
   }
 
   onSearch(search: string | null) {
-    console.log(search);
+    this.productStore.setSearchTerm(search);
   }
 
   onEdit(product: Product) {
