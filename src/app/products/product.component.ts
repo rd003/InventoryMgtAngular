@@ -7,6 +7,7 @@ import { ProductListComponent } from "./ui/product-list.component";
 import { ProductFilterComponent } from "./ui/product-filter.component";
 import { Product } from "./product.model";
 import { ProductPaginatorComponent } from "./ui/product-paginator.component";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @Component({
   selector: "app-product",
@@ -18,6 +19,7 @@ import { ProductPaginatorComponent } from "./ui/product-paginator.component";
     ProductListComponent,
     ProductFilterComponent,
     ProductPaginatorComponent,
+    MatProgressSpinnerModule,
   ],
   providers: [
     provideComponentStore(CategoryStore),
@@ -25,17 +27,27 @@ import { ProductPaginatorComponent } from "./ui/product-paginator.component";
   ],
   template: `
     <h1>Products</h1>
-    <ng-container *ngIf="vm$ | async as vm">
+    <ng-container *ngIf="vm$ | async as vm" style="position: relative;">
+      <div *ngIf="vm.loading" class="spinner-center">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
       <app-product-filter (filter)="onSearch($event)" />
-      <app-product-list
-        [products]="vm.products"
-        (edit)="onEdit($event)"
-        (delete)="onDelete($event)"
-      />
-      <app-product-paginator
-        (pageSelect)="onPageSelect($event)"
-        [totalRecords]="vm.totalRecords"
-      />
+      <div *ngIf="vm.products && vm.products.length > 0; else no_records">
+        <app-product-list
+          [products]="vm.products"
+          (edit)="onEdit($event)"
+          (delete)="onDelete($event)"
+        />
+        <app-product-paginator
+          (pageSelect)="onPageSelect($event)"
+          [totalRecords]="vm.totalRecords"
+        />
+      </div>
+      <ng-template #no_records>
+        <p style="margin-top:20px;font-size:21px">
+          No records found
+        </p></ng-template
+      >
     </ng-container>
   `,
   styles: [``],
