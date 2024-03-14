@@ -6,6 +6,7 @@ import { AsyncPipe, NgFor, NgIf } from "@angular/common";
 import { ProductListComponent } from "./ui/product-list.component";
 import { ProductFilterComponent } from "./ui/product-filter.component";
 import { Product } from "./product.model";
+import { ProductPaginatorComponent } from "./ui/product-paginator.component";
 
 @Component({
   selector: "app-product",
@@ -16,6 +17,7 @@ import { Product } from "./product.model";
     AsyncPipe,
     ProductListComponent,
     ProductFilterComponent,
+    ProductPaginatorComponent,
   ],
   providers: [
     provideComponentStore(CategoryStore),
@@ -30,6 +32,10 @@ import { Product } from "./product.model";
         (edit)="onEdit($event)"
         (delete)="onDelete($event)"
       />
+      <app-product-paginator
+        (pageSelect)="onPageSelect($event)"
+        [totalRecords]="vm.totalRecords"
+      />
     </ng-container>
   `,
   styles: [``],
@@ -39,6 +45,10 @@ export class ProductComponent {
   productStore = inject(ProductStore);
   categoryStore = inject(CategoryStore);
   vm$ = this.productStore.vm$;
+
+  onPageSelect(pageData: { page: number; limit: number }) {
+    console.log(pageData);
+  }
 
   onSearch(search: string | null) {
     console.log(search);
