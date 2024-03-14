@@ -96,5 +96,6 @@ export class ProductListComponent {
     "categoryName",
     "createDate",
     "updateDate",
+    "action",
   ];
 }
