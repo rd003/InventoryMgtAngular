@@ -1,6 +1,6 @@
 export interface PaginationModel {
-  page: number;
-  limit: number;
-  totalPages: number;
-  totalRecords: number;
+  Page: number;
+  Limit: number;
+  TotalPages: number;
+  TotalRecords: number;
 }

@@ -39,11 +39,12 @@ export class ProductService {
     sortDirection: string | null = null
   ): Observable<PaginatedProduct> {
     let parameters = new HttpParams();
-    parameters.set("page", page);
-    parameters.set("limit", limit);
-    if (searchTerm) parameters.set("searchTerm", searchTerm);
-    if (sortColumn) parameters.set("sortColumn", sortColumn);
-    if (sortDirection) parameters.set("sortDirection", sortDirection);
+    parameters = parameters.set("page", page);
+    parameters = parameters.set("limit", limit);
+    if (searchTerm) parameters = parameters.set("searchTerm", searchTerm);
+    if (sortColumn) parameters = parameters.set("sortColumn", sortColumn);
+    if (sortDirection)
+      parameters = parameters.set("sortDirection", sortDirection);
     return this.#http
       .get(this.#baseUrl, {
         observe: "response",
@@ -55,7 +56,7 @@ export class ProductService {
             "X-Pagination"
           ) as string;
           const paginationData: PaginationModel = JSON.parse(paginationHeader);
-          const products = response.body as Product[]; // Products from the response body
+          const products = response.body as Product[];
           const productResponse: PaginatedProduct = {
             ...paginationData,
             products,
