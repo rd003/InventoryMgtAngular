@@ -14,7 +14,7 @@ import { Product } from "./product.model";
 import { ProductPaginatorComponent } from "./ui/product-paginator.component";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatDialog } from "@angular/material/dialog";
-import { Subject, map, takeUntil, tap } from "rxjs";
+import { Subject, takeUntil, tap } from "rxjs";
 import { ProductDialogComponent } from "./ui/product-dialog.component";
 import { CategoryModel } from "../category/category.model";
 import { MatButtonModule } from "@angular/material/button";

@@ -3,7 +3,6 @@ import {
   Component,
   EventEmitter,
   Inject,
-  Input,
   Output,
 } from "@angular/core";
 import {
@@ -33,6 +32,7 @@ import { MatSelectModule } from "@angular/material/select";
     MatInputModule,
     MatButtonModule,
     MatSelectModule,
+    MatDialogModule,
   ],
   template: `
     <h1 mat-dialog-title>
@@ -81,13 +81,23 @@ import { MatSelectModule } from "@angular/material/select";
   styles: [
     `
       .product-form {
-        display: grid;
-        grid-template-columns: repeat(
-          3,
-          1fr
-        ); /* Three columns with equal width */
-        gap: 16px; /* Adjust the gap between columns as needed */
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
       }
+
+      mat-form-field {
+        width: 500px;
+      }
+      // .product-form {
+      //   display: grid;
+      //   grid-template-columns: repeat(
+      //     3,
+      //     1fr
+      //   ); /* Three columns with equal width */
+      //   gap: 16px; /* Adjust the gap between columns as needed */
+      // }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
