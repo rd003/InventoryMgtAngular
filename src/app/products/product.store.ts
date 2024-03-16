@@ -81,6 +81,7 @@ export class ProductStore
   ) {
     const updateState = {
       ...state,
+      loading: false,
       products: [...state.products, product],
     };
     return updateState;
@@ -89,12 +90,14 @@ export class ProductStore
   private readonly updateStoresProduct = this.updater(
     (state, product: Product) => ({
       ...state,
+      loading: false,
       products: state.products.map((p) => (p.id === product.id ? product : p)),
     })
   );
 
   private readonly deleteStoresProduct = this.updater((state, id: number) => ({
     ...state,
+    loading: false,
     products: state.products.filter((p) => p.id !== id),
   }));
 

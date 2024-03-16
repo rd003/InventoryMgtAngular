@@ -50,8 +50,9 @@ import { MatSelectModule } from "@angular/material/select";
         <mat-form-field [appearance]="'outline'">
           <mat-label>Category</mat-label>
           <mat-select formControlName="categoryId">
+            <!-- <mat-option [value]="null">None</mat-option> -->
             @for (category of data.categories; track category.id) {
-            <mat-option value="category.id">{{
+            <mat-option [value]="category.id">{{
               category.categoryName
             }}</mat-option>
             }
@@ -60,7 +61,7 @@ import { MatSelectModule } from "@angular/material/select";
 
         <mat-form-field [appearance]="'outline'">
           <mat-label>Price</mat-label>
-          <input matInput formControlName="price" />
+          <input matInput type="number" formControlName="price" />
         </mat-form-field>
       </form>
     </div>
@@ -69,7 +70,7 @@ import { MatSelectModule } from "@angular/material/select";
         mat-raised-button
         color="primary"
         (click)="onSubmit()"
-        disabled="productForm.invalid"
+        [disabled]="productForm.invalid"
       >
         Save
       </button>
@@ -107,7 +108,7 @@ export class ProductDialogComponent {
   productForm: FormGroup = new FormGroup({
     id: new FormControl<number>(0),
     productName: new FormControl<string>("", Validators.required),
-    categoryId: new FormControl<number>(0, Validators.required),
+    categoryId: new FormControl<number | null>(null, Validators.required),
     price: new FormControl<number>(0, Validators.required),
   });
 
@@ -117,7 +118,7 @@ export class ProductDialogComponent {
 
   onSubmit() {
     if (this.productForm.valid) {
-      const product: Product = Object.assign(this.productForm.value);
+      const product: Product = Object.assign(this.productForm.value) as Product;
       this.sumbit.emit(product);
     }
   }

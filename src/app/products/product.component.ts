@@ -55,7 +55,7 @@ import { MatButtonModule } from "@angular/material/button";
       <div *ngIf="vm.products && vm.products.length > 0; else no_records">
         <app-product-list
           [products]="vm.products"
-          (edit)="onEdit($event)"
+          (edit)="onAddUpdate('Update Product', $event)"
           (delete)="onDelete($event)"
         />
         <app-product-paginator
@@ -89,12 +89,15 @@ export class ProductComponent implements OnDestroy {
     this.productStore.setSearchTerm(search);
   }
 
-  onEdit(product: Product) {
-    console.log(product);
-  }
+  // onEdit(product: Product) {
+  //   this.onAddUpdate("Update Product", product);
+  // }
 
   onDelete(product: Product) {
-    console.log(product);
+    if (confirm("Are you sure to delete?")) {
+      this.productStore.deleteProduct(product.id);
+    }
+    // console.log(product);
   }
 
   onAddUpdate(action: string, product: Product | null = null) {
@@ -115,12 +118,15 @@ export class ProductComponent implements OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe((submittedProduct) => {
         if (!submittedProduct) return;
-        if (submittedProduct.id) {
+        if (submittedProduct.id && submittedProduct.id > 0) {
           // update book
+          //console.log("update");
+          this.productStore.updateProduct(submittedProduct);
         } else {
           // add book
+          //console.log(submittedProduct);
+          this.productStore.addProduct(submittedProduct);
         }
-        // TODO: lines below only executed, when we have added books successfully
         dialogRef.componentInstance.productForm.reset();
         dialogRef.componentInstance.onCanceled();
       });
