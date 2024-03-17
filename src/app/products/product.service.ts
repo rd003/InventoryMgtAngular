@@ -1,7 +1,7 @@
 import { Injectable, inject } from "@angular/core";
 import { environment } from "../../environments/environment.development";
 import { PaginatedProduct, Product } from "./product.model";
-import { Observable, delay, map } from "rxjs";
+import { Observable, map } from "rxjs";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { PaginationModel } from "../shared/models/pagination.model";
 
@@ -63,7 +63,6 @@ export class ProductService {
           };
           return productResponse;
         })
-      )
-      .pipe(delay(800));
+      );
   }
 }

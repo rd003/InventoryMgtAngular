@@ -18,6 +18,7 @@ import { Subject, takeUntil, tap } from "rxjs";
 import { ProductDialogComponent } from "./ui/product-dialog.component";
 import { CategoryModel } from "../category/category.model";
 import { MatButtonModule } from "@angular/material/button";
+import { capitalize } from "../utils/init-cap.util";
 
 @Component({
   selector: "app-product",
@@ -57,6 +58,7 @@ import { MatButtonModule } from "@angular/material/button";
           [products]="vm.products"
           (edit)="onAddUpdate('Update Product', $event)"
           (delete)="onDelete($event)"
+          (sort)="onSort($event)"
         />
         <app-product-paginator
           (pageSelect)="onPageSelect($event)"
@@ -131,6 +133,12 @@ export class ProductComponent implements OnDestroy {
         dialogRef.componentInstance.onCanceled();
       });
   }
+
+  onSort(sortObj: { sortColumn: string; sortDirection: "asc" | "desc" }) {
+    this.productStore.setSortDirection(sortObj.sortDirection);
+    this.productStore.setSortColumn(capitalize(sortObj.sortColumn));
+  }
+
   constructor() {}
   ngOnDestroy(): void {
     this.destroyed$.next(true);
