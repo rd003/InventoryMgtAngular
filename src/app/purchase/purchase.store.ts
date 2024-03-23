@@ -212,6 +212,47 @@ export class PurchaseStore
     this.setTotalRecords(response.TotalRecords);
   };
 
+  readonly addPurchase = this.effect<PurchaseModel>((trigger$) =>
+    trigger$.pipe(
+      tap((_) => this.setLoading()),
+      switchMap((purchase) =>
+        this.purchaseService.add(purchase).pipe(
+          tapResponse(
+            (response) => this.addSinglePurchaseToState(response),
+            (error: HttpErrorResponse) => this.setError(error)
+          )
+        )
+      )
+    )
+  );
+  readonly updatePurchase = this.effect<PurchaseModel>((trigger$) =>
+    trigger$.pipe(
+      tap((_) => this.setLoading()),
+      switchMap((purchase) =>
+        this.purchaseService.update(purchase).pipe(
+          tapResponse(
+            (response) => this.updatePurchaseFromState(response),
+            (error: HttpErrorResponse) => this.setError(error)
+          )
+        )
+      )
+    )
+  );
+
+  readonly deletePurchase = this.effect<number>((id$) =>
+    id$.pipe(
+      tap((_) => this.setLoading()),
+      switchMap((id) =>
+        this.purchaseService.delete(id).pipe(
+          tapResponse(
+            (response) => this.deletePurchaseFromModel(response),
+            (error: HttpErrorResponse) => this.setError(error)
+          )
+        )
+      )
+    )
+  );
+
   constructor() {
     super(initialState);
   }
