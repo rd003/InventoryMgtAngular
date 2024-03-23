@@ -63,6 +63,7 @@ export class PurchaseService {
           const pagination = JSON.parse(paginationJson) as PaginationModel;
           const purchases = response.body as PurchaseModel[];
           const data: PaginatedPurchase = { ...pagination, purchases };
+          // console.log(response);
           return data;
         })
       );

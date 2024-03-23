@@ -23,6 +23,14 @@ export const routes: Routes = [
     },
   },
   {
+    path: "purchases",
+    loadComponent() {
+      return import("./purchase/purchse.component").then(
+        (a) => a.PurchaseComponent
+      );
+    },
+  },
+  {
     path: "",
     redirectTo: "/home",
     pathMatch: "full",

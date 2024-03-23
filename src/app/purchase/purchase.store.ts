@@ -7,8 +7,7 @@ import {
   tapResponse,
 } from "@ngrx/component-store";
 import { PurchaseService } from "./purchase.service";
-import { combineLatest, exhaustMap, map, tap } from "rxjs";
-import { PaginatedProduct } from "../products/product.model";
+import { combineLatest, exhaustMap, switchMap, tap } from "rxjs";
 
 interface PurchaseState {
   purchases: PurchaseModel[];
@@ -168,7 +167,7 @@ export class PurchaseStore
           this.sortDirection$,
         ]);
         return combinedStream$.pipe(
-          map(
+          switchMap(
             ([
               page,
               limit,
@@ -178,6 +177,7 @@ export class PurchaseStore
               sortColumn,
               sortDirection,
             ]) => {
+              console.log("Inside combined stream");
               return this.purchaseService
                 .getAll(
                   page,
@@ -190,8 +190,12 @@ export class PurchaseStore
                 )
                 .pipe(
                   tapResponse(
-                    (response) => this.handlePurchaseResponse(response),
-                    (error: HttpErrorResponse) => this.setError(error)
+                    (response) => {
+                      this.handlePurchaseResponse(response);
+                    },
+                    (error: HttpErrorResponse) => {
+                      this.setError(error);
+                    }
                   )
                 );
             }
@@ -202,7 +206,6 @@ export class PurchaseStore
   );
 
   private handlePurchaseResponse = (response: PaginatedPurchase) => {
-    console.log(response);
     this.loadPurchaseToState(response.purchases);
     this.setPage(response.Page);
     this.setLimit(response.Limit);
