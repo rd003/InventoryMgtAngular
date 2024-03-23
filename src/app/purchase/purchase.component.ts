@@ -17,7 +17,10 @@ import { PurchaseFilters } from "./ui/purchase-filters.component";
   template: `
     <h1>Purchases</h1>
     <ng-container *ngIf="this.purchaseStore.vm$ | async as vm">
-      <app-purchase-filters (searchProduct)="onSearch($event)" />
+      <app-purchase-filters
+        (searchProduct)="onSearch($event)"
+        (filterByPurchaseDate)="onDateFilter($event)"
+      />
       <app-purchase-list
         [purchases]="vm.purchases"
         (sort)="onSort($event)"
@@ -57,9 +60,10 @@ export class PurchaseComponent {
     this.purchaseStore.setProductName(productName);
   }
 
-  onDateFilter(dateFrom: string | null, dateTo: string | null) {
-    if (dateFrom && dateTo) {
-      //this.purchaseStore.setDateFilter({ dateFrom, dateTo });
+  onDateFilter(dateRange: { dateFrom: string | null; dateTo: string | null }) {
+    if (dateRange.dateFrom && dateRange.dateTo) {
+      // console.log(dateRange);
+      this.purchaseStore.setDateFilter({ ...dateRange });
     }
   }
   onAddUpdate(action: string, purchase: PurchaseModel | null = null) {
