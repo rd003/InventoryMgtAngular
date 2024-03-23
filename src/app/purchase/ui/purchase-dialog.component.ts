@@ -21,6 +21,8 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { PurchaseModel } from "../purchase.model";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { provideNativeDateAdapter } from "@angular/material/core";
 
 @Component({
   selector: "app-purchase-dialog",
@@ -32,17 +34,30 @@ import { PurchaseModel } from "../purchase.model";
     MatButtonModule,
     MatSelectModule,
     MatDialogModule,
+    MatDatepickerModule,
   ],
+  providers: [provideNativeDateAdapter()],
   template: ` <h1 mat-dialog-title>
       {{ data.title }}
     </h1>
     <div mat-dialog-content>
-      <form class="purchase-form" [formGroup]="productForm">
+      <form class="purchase-form" [formGroup]="purchaseForm">
         <input type="hidden" formControlName="id" />
 
         <mat-form-field [appearance]="'outline'">
           <mat-label>Purchase Date</mat-label>
-          <input matInput formControlName="purchaseDate" />
+
+          <input
+            matInput
+            formControlName="purchaseDate"
+            [matDatepicker]="picker"
+          />
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field [appearance]="'outline'">
@@ -71,7 +86,7 @@ import { PurchaseModel } from "../purchase.model";
         mat-raised-button
         color="primary"
         (click)="onSubmit()"
-        [disabled]="productForm.invalid"
+        [disabled]="purchaseForm.invalid"
       >
         Save
       </button>
@@ -97,9 +112,9 @@ import { PurchaseModel } from "../purchase.model";
 })
 export class PurchaseDialogComponent {
   @Output() sumbit = new EventEmitter<PurchaseModel>();
-  productForm: FormGroup = new FormGroup({
+  purchaseForm: FormGroup = new FormGroup({
     id: new FormControl<number>(0),
-    purchaseDate: new FormControl<string>("", Validators.required),
+    purchaseDate: new FormControl<Date | null>(null, Validators.required),
     productId: new FormControl<number | null>(null, Validators.required),
     price: new FormControl<number>(0, Validators.required),
     quantity: new FormControl<number>(0, Validators.required),
@@ -110,9 +125,9 @@ export class PurchaseDialogComponent {
   }
 
   onSubmit() {
-    if (this.productForm.valid) {
+    if (this.purchaseForm.valid) {
       const purchase: PurchaseModel = Object.assign(
-        this.productForm.value
+        this.purchaseForm.value
       ) as PurchaseModel;
       this.sumbit.emit(purchase);
     }

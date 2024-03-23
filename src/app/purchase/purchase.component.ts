@@ -124,7 +124,7 @@ export class PurchaseComponent implements OnDestroy {
           console.log("add");
           // this.purchaseStore.addPurchase(submittedPurchase);
         }
-        dialogRef.componentInstance.productForm.reset();
+        dialogRef.componentInstance.purchaseForm.reset();
         dialogRef.componentInstance.onCanceled();
       });
   }
