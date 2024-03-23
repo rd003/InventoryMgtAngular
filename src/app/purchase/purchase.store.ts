@@ -177,7 +177,6 @@ export class PurchaseStore
               sortColumn,
               sortDirection,
             ]) => {
-              console.log("Inside combined stream");
               return this.purchaseService
                 .getAll(
                   page,

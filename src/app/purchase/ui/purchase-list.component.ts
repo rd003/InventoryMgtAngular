@@ -10,12 +10,19 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTableModule } from "@angular/material/table";
 import { PurchaseModel } from "../purchase.model";
+import { MatSortModule, Sort } from "@angular/material/sort";
 
 @Component({
   selector: "app-purchase-list",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTableModule, MatButtonModule, MatIconModule, DatePipe],
+  imports: [
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    DatePipe,
+    MatSortModule,
+  ],
   styles: [``],
   template: `
     <table
@@ -23,28 +30,31 @@ import { PurchaseModel } from "../purchase.model";
       mat-table
       style=" margin-top: 1.5rem;"
       [dataSource]="purchases"
+      matSort
+      (matSortChange)="onSortData($event)"
     >
-      <!-- <ng-container matColumnDef="productName">
+      <ng-container matColumnDef="purchaseDate">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          sortActionDescription="sort by purchase date"
+        >
+          Purchase Date
+        </th>
+        <td mat-cell *matCellDef="let purchase">
+          {{ purchase.purchaseDate | date : "dd-MM-yyyy HH:MM" }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="productName">
         <th
           mat-header-cell
           *matHeaderCellDef
           mat-sort-header
           sortActionDescription="sort by product"
         >
-          Product
+          ProductName
         </th>
-        <td mat-cell *matCellDef="let element">
-          {{ element.productName }}
-        </td>
-      </ng-container> -->
-      <ng-container matColumnDef="purchaseDate">
-        <th mat-header-cell *matHeaderCellDef>Purchase Date</th>
-        <td mat-cell *matCellDef="let purchase">
-          {{ purchase.purchaseDate | date : "dd-MM-yyyy HH:MM" }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="productName">
-        <th mat-header-cell *matHeaderCellDef>ProductName</th>
         <td mat-cell *matCellDef="let purchase">{{ purchase.productName }}</td>
       </ng-container>
       <ng-container matColumnDef="price">
@@ -96,6 +106,16 @@ export class PurchaseListComponent {
   @Input({ required: true }) purchases!: PurchaseModel[];
   @Output() edit = new EventEmitter<PurchaseModel>();
   @Output() delete = new EventEmitter<PurchaseModel>();
+  @Output() sort = new EventEmitter<{
+    sortColumn: string;
+    sortDirection: "asc" | "desc";
+  }>();
+
+  onSortData(sortData: Sort) {
+    const sortColumn = sortData.active;
+    const sortDirection = sortData.direction as "asc" | "desc";
+    this.sort.emit({ sortColumn, sortDirection });
+  }
 
   displayedColumns = [
     "purchaseDate",
