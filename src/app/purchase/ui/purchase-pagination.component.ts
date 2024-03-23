@@ -8,7 +8,7 @@ import {
 import { MatPaginatorModule, PageEvent } from "@angular/material/paginator";
 
 @Component({
-  selector: "app-product-paginator",
+  selector: "app-purchase-paginator",
   standalone: true,
   imports: [MatPaginatorModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,7 +31,7 @@ import { MatPaginatorModule, PageEvent } from "@angular/material/paginator";
     `,
   ],
 })
-export class ProductPaginatorComponent {
+export class PurchasePaginatorComponent {
   @Output() pageSelect = new EventEmitter<{ page: number; limit: number }>();
   @Input({ required: true }) totalRecords!: number;
 

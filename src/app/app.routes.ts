@@ -25,7 +25,7 @@ export const routes: Routes = [
   {
     path: "purchases",
     loadComponent() {
-      return import("./purchase/purchse.component").then(
+      return import("./purchase/purchase.component").then(
         (a) => a.PurchaseComponent
       );
     },

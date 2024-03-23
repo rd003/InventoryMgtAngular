@@ -112,7 +112,7 @@ export class PurchaseStore
     purchases: state.purchases.filter((p) => p.id !== id),
   }));
 
-  setProductName = this.updater((state, productName: string) => ({
+  setProductName = this.updater((state, productName: string | null) => ({
     ...state,
     productName,
   }));
