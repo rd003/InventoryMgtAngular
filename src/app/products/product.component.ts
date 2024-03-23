@@ -91,10 +91,6 @@ export class ProductComponent implements OnDestroy {
     this.productStore.setSearchTerm(search);
   }
 
-  // onEdit(product: Product) {
-  //   this.onAddUpdate("Update Product", product);
-  // }
-
   onDelete(product: Product) {
     if (confirm("Are you sure to delete?")) {
       this.productStore.deleteProduct(product.id);

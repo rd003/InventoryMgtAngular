@@ -7,34 +7,12 @@ import { capitalize } from "../utils/init-cap.util";
 import { PurchaseModel } from "./purchase.model";
 import { PurchasePaginatorComponent } from "./ui/purchase-pagination.component";
 import { PurchaseFilters } from "./ui/purchase-filters.component";
+import { MatButtonModule } from "@angular/material/button";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @Component({
   selector: "app-purchase",
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [provideComponentStore(PurchaseStore)],
-  styles: [``],
-  template: `
-    <h1>Purchases</h1>
-    <ng-container *ngIf="this.purchaseStore.vm$ | async as vm">
-      <app-purchase-filters
-        (searchProduct)="onSearch($event)"
-        (filterByPurchaseDate)="onDateFilter($event)"
-        (clearFilter)="onClearFilter()"
-      />
-      <app-purchase-list
-        [purchases]="vm.purchases"
-        (sort)="onSort($event)"
-        (delete)="onDelete($event)"
-        (edit)="onAddUpdate('Edit purchase', $event)"
-      />
-
-      <app-purchase-paginator
-        [totalRecords]="vm.totalRecords"
-        (pageSelect)="onPageSelect($event)"
-      />
-    </ng-container>
-  `,
   imports: [
     AsyncPipe,
     JsonPipe,
@@ -42,7 +20,52 @@ import { PurchaseFilters } from "./ui/purchase-filters.component";
     NgIf,
     PurchasePaginatorComponent,
     PurchaseFilters,
+    MatButtonModule,
+    MatProgressSpinnerModule,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [provideComponentStore(PurchaseStore)],
+  styles: [``],
+  template: `
+    <div style="display: flex;align-items:center;gap:5px;margin-bottom:8px">
+      <span style="font-size: 26px;font-weight:bold"> Purchases </span>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="onAddUpdate('Add Purchase')"
+      >
+        Add More
+      </button>
+    </div>
+    <ng-container *ngIf="this.purchaseStore.vm$ | async as vm">
+      <div *ngIf="vm.loading" class="spinner-center">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+      <div *ngIf="vm.purchases && vm.purchases.length > 0">
+        <app-purchase-filters
+          (searchProduct)="onSearch($event)"
+          (filterByPurchaseDate)="onDateFilter($event)"
+          (clearFilter)="onClearFilter()"
+        />
+        <app-purchase-list
+          [purchases]="vm.purchases"
+          (sort)="onSort($event)"
+          (delete)="onDelete($event)"
+          (edit)="onAddUpdate('Edit purchase', $event)"
+        />
+
+        <app-purchase-paginator
+          [totalRecords]="vm.totalRecords"
+          (pageSelect)="onPageSelect($event)"
+        />
+      </div>
+      <ng-template #no_records>
+        <p style="margin-top:20px;font-size:21px">
+          No records found
+        </p></ng-template
+      >
+    </ng-container>
+  `,
 })
 export class PurchaseComponent {
   purchaseStore = inject(PurchaseStore);
