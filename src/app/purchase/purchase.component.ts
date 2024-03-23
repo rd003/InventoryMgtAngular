@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  inject,
+} from "@angular/core";
 import { provideComponentStore } from "@ngrx/component-store";
 import { PurchaseStore } from "./purchase.store";
 import { AsyncPipe, JsonPipe, NgIf } from "@angular/common";
@@ -9,6 +14,9 @@ import { PurchasePaginatorComponent } from "./ui/purchase-pagination.component";
 import { PurchaseFilters } from "./ui/purchase-filters.component";
 import { MatButtonModule } from "@angular/material/button";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { Subject, takeUntil } from "rxjs";
+import { PurchaseDialogComponent } from "./ui/purchase-dialog.component";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 
 @Component({
   selector: "app-purchase",
@@ -22,6 +30,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     PurchaseFilters,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatDialogModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [provideComponentStore(PurchaseStore)],
@@ -67,9 +76,10 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     </ng-container>
   `,
 })
-export class PurchaseComponent {
+export class PurchaseComponent implements OnDestroy {
   purchaseStore = inject(PurchaseStore);
-
+  dialog = inject(MatDialog);
+  destroyed$ = new Subject<boolean>();
   onSort(sortData: { sortColumn: string; sortDirection: "asc" | "desc" }) {
     this.purchaseStore.setSortColumn(capitalize(sortData.sortColumn));
     this.purchaseStore.setSortDirection(sortData.sortDirection);
@@ -96,7 +106,27 @@ export class PurchaseComponent {
     this.purchaseStore.setProductName(null);
   }
   onAddUpdate(action: string, purchase: PurchaseModel | null = null) {
-    //console.log(purchase);
+    const dialogRef = this.dialog.open(PurchaseDialogComponent, {
+      data: { purchase, title: action + " Book" },
+    });
+
+    dialogRef.componentInstance.sumbit
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((submittedPurchase) => {
+        console.log(submittedPurchase);
+        if (!submittedPurchase) return;
+        if (submittedPurchase.id && submittedPurchase.id > 0) {
+          // update book
+          console.log("update");
+          //this.purchaseStore.updatePurchase(submittedProduct);
+        } else {
+          // add book
+          console.log("add");
+          // this.purchaseStore.addPurchase(submittedPurchase);
+        }
+        dialogRef.componentInstance.productForm.reset();
+        dialogRef.componentInstance.onCanceled();
+      });
   }
 
   onDelete(purchase: PurchaseModel) {
@@ -104,5 +134,10 @@ export class PurchaseComponent {
     window.confirm("Are you sure to delete??");
     {
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.unsubscribe();
   }
 }
