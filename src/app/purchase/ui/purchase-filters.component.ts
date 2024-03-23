@@ -10,12 +10,8 @@ import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { debounceTime, tap } from "rxjs";
-import {
-  MatDatepickerInputEvent,
-  MatDatepickerModule,
-} from "@angular/material/datepicker";
+import { MatDatepickerModule } from "@angular/material/datepicker";
 import { provideNativeDateAdapter } from "@angular/material/core";
-import { DatePipe } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
 
 @Component({
@@ -35,8 +31,6 @@ import { MatButtonModule } from "@angular/material/button";
       :host {
         display: flex;
         gap: 10px;
-        align-items: center;
-        border: 1px solid;
       }
     `,
   ],
@@ -44,9 +38,10 @@ import { MatButtonModule } from "@angular/material/button";
     <mat-form-field appearance="outline" style="width: 300px;">
       <mat-label>Product Name</mat-label>
       <input [formControl]="productName" matInput />
+      <mat-hint>Pencil</mat-hint>
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field appearance="outline" style="width: 300px;">
       <mat-date-range-input disabled [formGroup]="range" [rangePicker]="picker">
         <input
           matStartDate
@@ -63,7 +58,14 @@ import { MatButtonModule } from "@angular/material/button";
       <mat-date-range-picker #picker disabled="false"></mat-date-range-picker>
     </mat-form-field>
 
-    <button mat-raised-button color="accent">Clear</button>
+    <button
+      mat-raised-button
+      color="accent"
+      style="height: 54px;width:100px;font-size:16px"
+      (click)="clearFilters()"
+    >
+      Clear
+    </button>
   `,
 })
 export class PurchaseFilters {
@@ -72,6 +74,7 @@ export class PurchaseFilters {
     dateFrom: string | null;
     dateTo: string | null;
   }>();
+  @Output() clearFilter = new EventEmitter<void>();
 
   productName = new FormControl<string>("");
   range = new FormGroup({
@@ -79,9 +82,15 @@ export class PurchaseFilters {
     dateTo: new FormControl<Date | null>(null),
   });
 
-  onDateFromChange(type: string, event: MatDatepickerInputEvent<Date>) {
-    console.log(event.value);
+  clearFilters() {
+    this.range.patchValue({ dateFrom: null, dateTo: null });
+    this.productName.setValue(null);
+    this.clearFilter.emit();
   }
+
+  //   onDateFromChange(type: string, event: MatDatepickerInputEvent<Date>) {
+  //     console.log(event.value);
+  //   }
 
   constructor() {
     this.productName.valueChanges

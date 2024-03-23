@@ -20,6 +20,7 @@ import { PurchaseFilters } from "./ui/purchase-filters.component";
       <app-purchase-filters
         (searchProduct)="onSearch($event)"
         (filterByPurchaseDate)="onDateFilter($event)"
+        (clearFilter)="onClearFilter()"
       />
       <app-purchase-list
         [purchases]="vm.purchases"
@@ -65,6 +66,11 @@ export class PurchaseComponent {
       // console.log(dateRange);
       this.purchaseStore.setDateFilter({ ...dateRange });
     }
+  }
+
+  onClearFilter() {
+    this.purchaseStore.setDateFilter({ dateFrom: null, dateTo: null });
+    this.purchaseStore.setProductName(null);
   }
   onAddUpdate(action: string, purchase: PurchaseModel | null = null) {
     //console.log(purchase);
