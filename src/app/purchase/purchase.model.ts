@@ -15,7 +15,6 @@ export interface PurchaseModel {
   isDeleted: boolean;
 }
 
-export interface PaginatedPurchase {
+export interface PaginatedPurchase extends PaginationModel {
   purchases: PurchaseModel[];
-  paginationData: PaginationModel;
 }
