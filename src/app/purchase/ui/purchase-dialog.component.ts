@@ -62,7 +62,7 @@ import { provideNativeDateAdapter } from "@angular/material/core";
 
         <mat-form-field [appearance]="'outline'">
           <mat-label>Product</mat-label>
-          <input matInput formControlName="productId" />
+          <input matInput type="number" formControlName="productId" />
         </mat-form-field>
 
         <mat-form-field [appearance]="'outline'">
@@ -114,7 +114,7 @@ export class PurchaseDialogComponent {
   @Output() sumbit = new EventEmitter<PurchaseModel>();
   purchaseForm: FormGroup = new FormGroup({
     id: new FormControl<number>(0),
-    purchaseDate: new FormControl<Date | null>(null, Validators.required),
+    purchaseDate: new FormControl<string | null>(null, Validators.required),
     productId: new FormControl<number | null>(null, Validators.required),
     price: new FormControl<number>(0, Validators.required),
     quantity: new FormControl<number>(0, Validators.required),
