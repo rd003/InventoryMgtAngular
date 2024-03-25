@@ -46,18 +46,18 @@ import { provideNativeDateAdapter } from "@angular/material/core";
 
         <mat-form-field [appearance]="'outline'">
           <mat-label>Purchase Date</mat-label>
-
           <input
             matInput
             formControlName="purchaseDate"
             [matDatepicker]="picker"
           />
-          <mat-hint>MM/DD/YYYY</mat-hint>
+          <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
           <mat-datepicker-toggle
             matIconSuffix
             [for]="picker"
+            disabled="false"
           ></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
+          <mat-datepicker #picker disabled="false"></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field [appearance]="'outline'">
