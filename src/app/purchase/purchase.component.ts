@@ -113,8 +113,8 @@ export class PurchaseComponent implements OnDestroy {
     dialogRef.componentInstance.sumbit
       .pipe(takeUntil(this.destroyed$))
       .subscribe((submittedPurchase) => {
-        // console.log(submittedPurchase.purchaseDate);
         if (!submittedPurchase) return;
+        // console.log(submittedPurchase.purchaseDate);
         if (submittedPurchase.id && submittedPurchase.id > 0) {
           // update book
           //console.log("update");

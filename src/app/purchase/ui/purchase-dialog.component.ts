@@ -114,7 +114,7 @@ export class PurchaseDialogComponent {
   @Output() sumbit = new EventEmitter<PurchaseModel>();
   purchaseForm: FormGroup = new FormGroup({
     id: new FormControl<number>(0),
-    purchaseDate: new FormControl<string | null>(null, Validators.required),
+    purchaseDate: new FormControl<string | null>("", Validators.required),
     productId: new FormControl<number | null>(null, Validators.required),
     price: new FormControl<number>(0, Validators.required),
     quantity: new FormControl<number>(0, Validators.required),
@@ -126,10 +126,14 @@ export class PurchaseDialogComponent {
 
   onSubmit() {
     if (this.purchaseForm.valid) {
+      //   console.log(this.purchaseForm.get("purchaseDate")?.value);
       const purchase: PurchaseModel = Object.assign(
         this.purchaseForm.value
       ) as PurchaseModel;
-      this.sumbit.emit(purchase);
+      console.log(new Date(purchase.purchaseDate)); //Tue Mar 26 2024 00:00:00 GMT+0530 (India Standard Time)
+      const purchaseDateLocale = new Date(purchase.purchaseDate).toISOString(); // 1 day back
+
+      this.sumbit.emit({ ...purchase, purchaseDate: purchaseDateLocale });
     }
   }
   constructor(
