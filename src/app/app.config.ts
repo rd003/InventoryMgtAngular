@@ -17,7 +17,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideAnimationsAsync(),
-    { provide: MAT_DATE_LOCALE, useValue: "en-US" },
+    { provide: MAT_DATE_LOCALE, useValue: "en-IN" },
 
     provideHttpClient(withInterceptorsFromDi()),
     {

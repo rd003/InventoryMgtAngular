@@ -39,7 +39,6 @@ import { getDateWithoutTimezone } from "../../utils/date-utils";
     <mat-form-field appearance="outline" style="width: 300px;">
       <mat-label>Product Name</mat-label>
       <input [formControl]="productName" matInput />
-      <mat-hint>Pencil</mat-hint>
     </mat-form-field>
 
     <mat-form-field appearance="outline" style="width: 300px;">
@@ -51,7 +50,6 @@ import { getDateWithoutTimezone } from "../../utils/date-utils";
         />
         <input matEndDate formControlName="dateTo" placeholder="End date" />
       </mat-date-range-input>
-      <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
       <mat-datepicker-toggle
         matIconSuffix
         [for]="picker"
