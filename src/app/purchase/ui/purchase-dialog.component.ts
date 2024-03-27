@@ -24,6 +24,9 @@ import { PurchaseModel } from "../purchase.model";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { provideNativeDateAdapter } from "@angular/material/core";
 import { getDateWithoutTimezone } from "../../utils/date-utils";
+import { Observable, map, startWith, tap } from "rxjs";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { AsyncPipe } from "@angular/common";
 
 @Component({
   selector: "app-purchase-dialog",
@@ -36,6 +39,8 @@ import { getDateWithoutTimezone } from "../../utils/date-utils";
     MatSelectModule,
     MatDialogModule,
     MatDatepickerModule,
+    MatAutocompleteModule,
+    AsyncPipe,
   ],
   providers: [provideNativeDateAdapter()],
   template: ` <h1 mat-dialog-title>
@@ -61,9 +66,21 @@ import { getDateWithoutTimezone } from "../../utils/date-utils";
           <mat-datepicker #picker disabled="false"></mat-datepicker>
         </mat-form-field>
 
-        <mat-form-field [appearance]="'outline'">
+        <mat-form-field class="example-full-width">
           <mat-label>Product</mat-label>
-          <input matInput type="number" formControlName="productId" />
+          <input
+            type="text"
+            placeholder="Pick one"
+            aria-label="Product"
+            matInput
+            formControlName="productId"
+            [matAutocomplete]="auto"
+          />
+          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+            @for (option of filteredOptions | async; track option) {
+            <mat-option [value]="option">{{ option }}</mat-option>
+            }
+          </mat-autocomplete>
         </mat-form-field>
 
         <mat-form-field [appearance]="'outline'">
@@ -113,6 +130,9 @@ import { getDateWithoutTimezone } from "../../utils/date-utils";
 })
 export class PurchaseDialogComponent {
   @Output() sumbit = new EventEmitter<PurchaseModel>();
+  filteredOptions!: Observable<string[]> | undefined;
+  options: string[] = ["One", "Two", "Three"];
+
   purchaseForm: FormGroup = new FormGroup({
     id: new FormControl<number>(0),
     purchaseDate: new FormControl<string | null>("", Validators.required),
@@ -120,6 +140,14 @@ export class PurchaseDialogComponent {
     price: new FormControl<number>(0, Validators.required),
     quantity: new FormControl<number>(0, Validators.required),
   });
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.options.filter((option) =>
+      option.toLowerCase().includes(filterValue)
+    );
+  }
 
   onCanceled() {
     this.dialogRef.close();
@@ -145,5 +173,16 @@ export class PurchaseDialogComponent {
       title: string;
       purchase: PurchaseModel | null;
     }
-  ) {}
+  ) {
+    // this.filteredOptions = this.myControl.valueChanges.pipe(
+    //   startWith(''),
+    //   map(value => this._filter(value || '')),
+    // );
+    this.filteredOptions = this.purchaseForm
+      .get<string>("productId")
+      ?.valueChanges.pipe(
+        startWith(""),
+        map((value) => this._filter(value || ""))
+      );
+  }
 }

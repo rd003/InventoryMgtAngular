@@ -14,6 +14,7 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { provideNativeDateAdapter } from "@angular/material/core";
 import { MatButtonModule } from "@angular/material/button";
 import { getDateWithoutTimezone } from "../../utils/date-utils";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 @Component({
   selector: "app-purchase-filters",
@@ -24,6 +25,7 @@ import { getDateWithoutTimezone } from "../../utils/date-utils";
     ReactiveFormsModule,
     MatDatepickerModule,
     MatButtonModule,
+    MatAutocompleteModule,
   ],
   providers: [provideNativeDateAdapter()],
   changeDetection: ChangeDetectionStrategy.OnPush,
