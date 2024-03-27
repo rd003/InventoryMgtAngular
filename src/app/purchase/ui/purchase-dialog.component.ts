@@ -23,6 +23,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { PurchaseModel } from "../purchase.model";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { provideNativeDateAdapter } from "@angular/material/core";
+import { getDateWithoutTimezone } from "../../utils/date-utils";
 
 @Component({
   selector: "app-purchase-dialog",
@@ -130,10 +131,11 @@ export class PurchaseDialogComponent {
       const purchase: PurchaseModel = Object.assign(
         this.purchaseForm.value
       ) as PurchaseModel;
-      console.log(new Date(purchase.purchaseDate)); //Tue Mar 26 2024 00:00:00 GMT+0530 (India Standard Time)
-      const purchaseDateLocale = new Date(purchase.purchaseDate).toISOString(); // 1 day back
-
-      this.sumbit.emit({ ...purchase, purchaseDate: purchaseDateLocale });
+      // console.log(new Date(purchase.purchaseDate)); //Tue Mar 26 2024 00:00:00 GMT+0530 (India Standard Time)
+      const purchaseDate = getDateWithoutTimezone(
+        new Date(purchase.purchaseDate)
+      );
+      this.sumbit.emit({ ...purchase, purchaseDate });
     }
   }
   constructor(

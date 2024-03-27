@@ -114,7 +114,7 @@ export class PurchaseComponent implements OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe((submittedPurchase) => {
         if (!submittedPurchase) return;
-        // console.log(submittedPurchase.purchaseDate);
+        console.log(submittedPurchase.purchaseDate);
         if (submittedPurchase.id && submittedPurchase.id > 0) {
           // update book
           //console.log("update");

@@ -13,6 +13,7 @@ import { debounceTime, tap } from "rxjs";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { provideNativeDateAdapter } from "@angular/material/core";
 import { MatButtonModule } from "@angular/material/button";
+import { getDateWithoutTimezone } from "../../utils/date-utils";
 
 @Component({
   selector: "app-purchase-filters",
@@ -108,8 +109,8 @@ export class PurchaseFilters {
         tap((v) => {
           if (v.dateFrom && v.dateTo) {
             this.filterByPurchaseDate.emit({
-              dateFrom: v.dateFrom.toISOString(),
-              dateTo: v.dateTo.toISOString(),
+              dateFrom: getDateWithoutTimezone(v.dateFrom),
+              dateTo: getDateWithoutTimezone(v.dateTo),
             });
           }
         }),
