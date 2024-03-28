@@ -149,7 +149,7 @@ export class PurchaseDialogComponent implements OnDestroy {
     productId: new FormControl<number | null>(null, Validators.required),
     price: new FormControl<number>(0, Validators.required),
     quantity: new FormControl<number>(1, Validators.required),
-    totalPrice: new FormControl<number>(0),
+    totalPrice: new FormControl<number>({ value: 0, disabled: true }),
   });
 
   // displayFn(productId: number | null) {
@@ -245,6 +245,18 @@ export class PurchaseDialogComponent implements OnDestroy {
         takeUntilDestroyed()
       )
       .subscribe();
+
     // on value changes of price
+    this.purchaseForm
+      .get("price")
+      ?.valueChanges.pipe(
+        tap((price) => {
+          if (price && typeof price === "number") {
+            this._setTotalPrice();
+          }
+        }),
+        takeUntilDestroyed()
+      )
+      .subscribe();
   }
 }
