@@ -26,9 +26,8 @@ import { PurchaseModel } from "../purchase.model";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { provideNativeDateAdapter } from "@angular/material/core";
 import { getDateWithoutTimezone } from "../../utils/date-utils";
-import { EMPTY, Observable, Subject, map, switchMap, takeUntil } from "rxjs";
+import { EMPTY, Subject, map, switchMap, takeUntil } from "rxjs";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
-import { AsyncPipe } from "@angular/common";
 import { ProductService } from "../../products/product.service";
 import { Product } from "../../products/product.model";
 
@@ -44,7 +43,6 @@ import { Product } from "../../products/product.model";
     MatDialogModule,
     MatDatepickerModule,
     MatAutocompleteModule,
-    AsyncPipe,
   ],
   providers: [provideNativeDateAdapter()],
   template: ` <h1 mat-dialog-title>
@@ -70,7 +68,7 @@ import { Product } from "../../products/product.model";
           <mat-datepicker #picker disabled="false"></mat-datepicker>
         </mat-form-field>
 
-        <mat-form-field class="example-full-width">
+        <mat-form-field>
           <mat-label>Product</mat-label>
           <input
             type="text"
@@ -83,9 +81,9 @@ import { Product } from "../../products/product.model";
           <mat-autocomplete
             autoActiveFirstOption
             #auto="matAutocomplete"
-            [displayWith]="displayFn.bind(this) | async"
+            [displayWith]="displayFn.bind(this)"
           >
-            @for (option of filteredProducts | async; track option.id) {
+            @for (option of filteredProducts; track option.id) {
             <mat-option [value]="option.id">{{
               option.productName
             }}</mat-option>
@@ -141,7 +139,7 @@ import { Product } from "../../products/product.model";
 export class PurchaseDialogComponent implements OnDestroy {
   @Output() sumbit = new EventEmitter<PurchaseModel>();
   productService = inject(ProductService);
-  filteredProducts!: Observable<Product[]> | undefined;
+  filteredProducts!: Product[] | undefined;
   destroy$ = new Subject<boolean>();
 
   purchaseForm: FormGroup = new FormGroup({
@@ -153,21 +151,22 @@ export class PurchaseDialogComponent implements OnDestroy {
     totalPrice: new FormControl<number>(0),
   });
 
-  displayFn(productId: number | null) {
-    if (!productId) return EMPTY;
-    return this.productService
-      .getProduct(productId)
-      .pipe(map((d) => d.productName));
-  }
-
   // displayFn(productId: number | null) {
-  //   if (!productId) return "";
-  //   const product = this._getProductById(productId);
-  //   if (!product) return "";
-  //   // this._setPrice(product);
-  //   // this._setTotalPrice();
-  //   return product.productName;
+  //   if (!productId) return EMPTY;
+  //   return this.productService
+  //     .getProduct(productId)
+  //     .pipe(map((d) => d.productName));
   // }
+
+  displayFn(productId: number | null) {
+    if (!productId || !this.filteredProducts) return "";
+
+    const product = this.filteredProducts.find((a) => a.id === productId);
+    if (!product) return "";
+    this._setPrice(product);
+    this._setTotalPrice();
+    return product.productName;
+  }
 
   private _setPrice(product: Product) {
     this.purchaseForm.get("price")?.setValue(product.price);
@@ -180,23 +179,6 @@ export class PurchaseDialogComponent implements OnDestroy {
       const totalPrice = price * quantity;
       this.purchaseForm.get("totalPrice")?.setValue(totalPrice);
     }
-  }
-
-  private _getProductById(productId: number): Product | null {
-    let product: Product | null = null;
-    this.productService
-      .getProduct(productId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (retrievedProduct) => {
-          //console.log({ "fetched product": retrievedProduct });
-          product = retrievedProduct;
-        },
-        error: (error) => {
-          console.log(error);
-        },
-      });
-    return product;
   }
 
   onCanceled() {
@@ -227,7 +209,7 @@ export class PurchaseDialogComponent implements OnDestroy {
       purchase: PurchaseModel | null;
     }
   ) {
-    this.filteredProducts = this.purchaseForm
+    this.purchaseForm
       .get<string>("productId")
       ?.valueChanges.pipe(
         switchMap((value: string | null) => {
@@ -242,7 +224,11 @@ export class PurchaseDialogComponent implements OnDestroy {
                 return data.products;
               })
             );
-        })
-      );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (products) => (this.filteredProducts = products),
+      });
   }
 }
