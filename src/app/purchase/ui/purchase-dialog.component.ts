@@ -26,10 +26,11 @@ import { PurchaseModel } from "../purchase.model";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { provideNativeDateAdapter } from "@angular/material/core";
 import { getDateWithoutTimezone } from "../../utils/date-utils";
-import { EMPTY, Subject, map, switchMap, takeUntil } from "rxjs";
+import { EMPTY, Subject, map, switchMap, takeUntil, tap } from "rxjs";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { ProductService } from "../../products/product.service";
 import { Product } from "../../products/product.model";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: "app-purchase-dialog",
@@ -209,6 +210,7 @@ export class PurchaseDialogComponent implements OnDestroy {
       purchase: PurchaseModel | null;
     }
   ) {
+    // on value changes of productId
     this.purchaseForm
       .get<string>("productId")
       ?.valueChanges.pipe(
@@ -230,5 +232,19 @@ export class PurchaseDialogComponent implements OnDestroy {
       .subscribe({
         next: (products) => (this.filteredProducts = products),
       });
+
+    // on value changes of quantity
+    this.purchaseForm
+      .get("quantity")
+      ?.valueChanges.pipe(
+        tap((qty) => {
+          if (qty && typeof qty === "number") {
+            this._setTotalPrice();
+          }
+        }),
+        takeUntilDestroyed()
+      )
+      .subscribe();
+    // on value changes of price
   }
 }
