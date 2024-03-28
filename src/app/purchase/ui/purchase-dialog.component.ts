@@ -3,7 +3,9 @@ import {
   Component,
   EventEmitter,
   Inject,
+  OnDestroy,
   Output,
+  inject,
 } from "@angular/core";
 import {
   FormControl,
@@ -24,9 +26,11 @@ import { PurchaseModel } from "../purchase.model";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { provideNativeDateAdapter } from "@angular/material/core";
 import { getDateWithoutTimezone } from "../../utils/date-utils";
-import { Observable, map, startWith, tap } from "rxjs";
+import { EMPTY, Observable, Subject, map, switchMap, takeUntil } from "rxjs";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { AsyncPipe } from "@angular/common";
+import { ProductService } from "../../products/product.service";
+import { Product } from "../../products/product.model";
 
 @Component({
   selector: "app-purchase-dialog",
@@ -70,15 +74,21 @@ import { AsyncPipe } from "@angular/common";
           <mat-label>Product</mat-label>
           <input
             type="text"
-            placeholder="Pick one"
+            placeholder="Search product"
             aria-label="Product"
             matInput
             formControlName="productId"
             [matAutocomplete]="auto"
           />
-          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-            @for (option of filteredOptions | async; track option) {
-            <mat-option [value]="option">{{ option }}</mat-option>
+          <mat-autocomplete
+            autoActiveFirstOption
+            #auto="matAutocomplete"
+            [displayWith]="displayFn.bind(this) | async"
+          >
+            @for (option of filteredProducts | async; track option.id) {
+            <mat-option [value]="option.id">{{
+              option.productName
+            }}</mat-option>
             }
           </mat-autocomplete>
         </mat-form-field>
@@ -95,7 +105,7 @@ import { AsyncPipe } from "@angular/common";
 
         <mat-form-field [appearance]="'outline'">
           <mat-label>Total</mat-label>
-          <input matInput type="number" />
+          <input matInput type="number" formControlName="totalPrice" />
         </mat-form-field>
       </form>
     </div>
@@ -128,25 +138,65 @@ import { AsyncPipe } from "@angular/common";
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PurchaseDialogComponent {
+export class PurchaseDialogComponent implements OnDestroy {
   @Output() sumbit = new EventEmitter<PurchaseModel>();
-  filteredOptions!: Observable<string[]> | undefined;
-  options: string[] = ["One", "Two", "Three"];
+  productService = inject(ProductService);
+  filteredProducts!: Observable<Product[]> | undefined;
+  destroy$ = new Subject<boolean>();
 
   purchaseForm: FormGroup = new FormGroup({
     id: new FormControl<number>(0),
     purchaseDate: new FormControl<string | null>("", Validators.required),
     productId: new FormControl<number | null>(null, Validators.required),
     price: new FormControl<number>(0, Validators.required),
-    quantity: new FormControl<number>(0, Validators.required),
+    quantity: new FormControl<number>(1, Validators.required),
+    totalPrice: new FormControl<number>(0),
   });
 
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
+  displayFn(productId: number | null) {
+    if (!productId) return EMPTY;
+    return this.productService
+      .getProduct(productId)
+      .pipe(map((d) => d.productName));
+  }
 
-    return this.options.filter((option) =>
-      option.toLowerCase().includes(filterValue)
-    );
+  // displayFn(productId: number | null) {
+  //   if (!productId) return "";
+  //   const product = this._getProductById(productId);
+  //   if (!product) return "";
+  //   // this._setPrice(product);
+  //   // this._setTotalPrice();
+  //   return product.productName;
+  // }
+
+  private _setPrice(product: Product) {
+    this.purchaseForm.get("price")?.setValue(product.price);
+  }
+
+  private _setTotalPrice() {
+    const quantity: number | null = this.purchaseForm.get("quantity")?.value;
+    const price: number | null = this.purchaseForm.get("price")?.value;
+    if (price && quantity) {
+      const totalPrice = price * quantity;
+      this.purchaseForm.get("totalPrice")?.setValue(totalPrice);
+    }
+  }
+
+  private _getProductById(productId: number): Product | null {
+    let product: Product | null = null;
+    this.productService
+      .getProduct(productId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (retrievedProduct) => {
+          //console.log({ "fetched product": retrievedProduct });
+          product = retrievedProduct;
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
+    return product;
   }
 
   onCanceled() {
@@ -159,12 +209,15 @@ export class PurchaseDialogComponent {
       const purchase: PurchaseModel = Object.assign(
         this.purchaseForm.value
       ) as PurchaseModel;
-      // console.log(new Date(purchase.purchaseDate)); //Tue Mar 26 2024 00:00:00 GMT+0530 (India Standard Time)
       const purchaseDate = getDateWithoutTimezone(
         new Date(purchase.purchaseDate)
       );
       this.sumbit.emit({ ...purchase, purchaseDate });
     }
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
   constructor(
     public dialogRef: MatDialogRef<PurchaseDialogComponent>,
@@ -174,15 +227,22 @@ export class PurchaseDialogComponent {
       purchase: PurchaseModel | null;
     }
   ) {
-    // this.filteredOptions = this.myControl.valueChanges.pipe(
-    //   startWith(''),
-    //   map(value => this._filter(value || '')),
-    // );
-    this.filteredOptions = this.purchaseForm
+    this.filteredProducts = this.purchaseForm
       .get<string>("productId")
       ?.valueChanges.pipe(
-        startWith(""),
-        map((value) => this._filter(value || ""))
+        switchMap((value: string | null) => {
+          // console.log({ "on value changes": value });
+          if (!value) return EMPTY;
+          if (typeof value !== "string") return EMPTY;
+          return this.productService
+            .getProducts(1, 1000, value.toLowerCase(), "Id", "asc")
+            .pipe(
+              map((data) => {
+                // this.purchaseForm.get('price')?.setValue(data.TotalRecords)
+                return data.products;
+              })
+            );
+        })
       );
   }
 }
