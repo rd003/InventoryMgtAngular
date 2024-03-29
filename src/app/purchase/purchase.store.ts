@@ -89,11 +89,14 @@ export class PurchaseStore
   );
 
   private loadPurchaseToState = this.updater(
-    (state, purchases: PurchaseModel[]) => ({
-      ...state,
-      loading: false,
-      purchases,
-    })
+    (state, purchases: PurchaseModel[]) => {
+      const updatedState = {
+        ...state,
+        loading: false,
+        purchases,
+      };
+      return updatedState;
+    }
   );
 
   private updatePurchaseFromState = this.updater(
@@ -107,13 +110,18 @@ export class PurchaseStore
   );
 
   private deletePurchaseFromModel = this.updater((state, id: number) => {
-    const updatedProducts = state.purchases.filter((p) => p.id !== id);
-    console.log(updatedProducts);
-    return {
+    // console.log({ beforeDelete: state.purchases.map((a) => a.productName) });
+    //console.log(id);
+    const updatedRecords = state.purchases.filter((p) => p.id !== id);
+    const updatedState = {
       ...state,
       loading: false,
-      purchases: updatedProducts,
+      purchases: updatedRecords,
     };
+    // console.log({
+    //   afterDelete: updatedState.purchases.map((a) => a.productName),
+    // });
+    return updatedState;
   });
 
   setProductName = this.updater((state, productName: string | null) => ({
@@ -209,10 +217,10 @@ export class PurchaseStore
   );
 
   private handlePurchaseResponse = (response: PaginatedPurchase) => {
-    this.loadPurchaseToState(response.purchases);
     this.setPage(response.Page);
     this.setLimit(response.Limit);
     this.setTotalRecords(response.TotalRecords);
+    this.loadPurchaseToState(response.purchases);
   };
 
   readonly addPurchase = this.effect<PurchaseModel>((trigger$) =>
@@ -248,7 +256,7 @@ export class PurchaseStore
       switchMap((id) =>
         this.purchaseService.delete(id).pipe(
           tapResponse(
-            (response) => this.deletePurchaseFromModel(response),
+            () => this.deletePurchaseFromModel(id),
             (error: HttpErrorResponse) => this.setError(error)
           )
         )

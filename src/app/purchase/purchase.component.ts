@@ -96,7 +96,6 @@ export class PurchaseComponent implements OnDestroy {
 
   onDateFilter(dateRange: { dateFrom: string | null; dateTo: string | null }) {
     if (dateRange.dateFrom && dateRange.dateTo) {
-      // console.log(dateRange);
       this.purchaseStore.setDateFilter({ ...dateRange });
     }
   }
@@ -114,14 +113,11 @@ export class PurchaseComponent implements OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe((submittedPurchase) => {
         if (!submittedPurchase) return;
-        console.log(submittedPurchase.purchaseDate);
         if (submittedPurchase.id && submittedPurchase.id > 0) {
           // update book
-          //console.log("update");
           //this.purchaseStore.updatePurchase(submittedProduct);
         } else {
           // add book
-          //console.log("add");
           this.purchaseStore.addPurchase(submittedPurchase);
         }
         dialogRef.componentInstance.purchaseForm.reset();
@@ -130,9 +126,7 @@ export class PurchaseComponent implements OnDestroy {
   }
 
   onDelete(purchase: PurchaseModel) {
-    //console.log(purchase);
-    window.confirm("Are you sure to delete??");
-    {
+    if (window.confirm("Are you sure to delete??")) {
       this.purchaseStore.deletePurchase(purchase.id);
     }
   }
