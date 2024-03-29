@@ -133,6 +133,7 @@ export class PurchaseComponent implements OnDestroy {
     //console.log(purchase);
     window.confirm("Are you sure to delete??");
     {
+      this.purchaseStore.deletePurchase(purchase.id);
     }
   }
 

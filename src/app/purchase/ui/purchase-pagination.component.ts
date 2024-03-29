@@ -16,8 +16,8 @@ import { MatPaginatorModule, PageEvent } from "@angular/material/paginator";
     <mat-paginator
       class="product-paginator"
       [length]="totalRecords"
-      [pageSize]="4"
-      [pageSizeOptions]="[4, 10, 25, 100]"
+      [pageSize]="5"
+      [pageSizeOptions]="[5, 10, 25, 100]"
       aria-label="Select page"
       (page)="onPageSelect($event)"
     >

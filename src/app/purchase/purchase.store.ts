@@ -31,7 +31,7 @@ const initialState: PurchaseState = {
   sortColumn: "Id",
   sortDirection: "asc",
   page: 1,
-  limit: 4,
+  limit: 5,
   totalRecords: 0,
   loading: false,
   error: null,
@@ -106,11 +106,15 @@ export class PurchaseStore
     })
   );
 
-  private deletePurchaseFromModel = this.updater((state, id: number) => ({
-    ...state,
-    loading: false,
-    purchases: state.purchases.filter((p) => p.id !== id),
-  }));
+  private deletePurchaseFromModel = this.updater((state, id: number) => {
+    const updatedProducts = state.purchases.filter((p) => p.id !== id);
+    console.log(updatedProducts);
+    return {
+      ...state,
+      loading: false,
+      purchases: updatedProducts,
+    };
+  });
 
   setProductName = this.updater((state, productName: string | null) => ({
     ...state,
