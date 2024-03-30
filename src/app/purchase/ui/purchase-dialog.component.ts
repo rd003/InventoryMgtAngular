@@ -210,6 +210,11 @@ export class PurchaseDialogComponent implements OnDestroy {
       purchase: PurchaseModel | null;
     }
   ) {
+    if (data.purchase) {
+      this.purchaseForm.patchValue(data.purchase);
+      // this.purchaseForm.get("productId")?.setValue(data.purchase.productId);
+      this._setTotalPrice();
+    }
     // on value changes of productId
     this.purchaseForm
       .get<string>("productId")

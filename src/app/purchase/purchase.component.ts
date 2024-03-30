@@ -115,7 +115,7 @@ export class PurchaseComponent implements OnDestroy {
         if (!submittedPurchase) return;
         if (submittedPurchase.id && submittedPurchase.id > 0) {
           // update book
-          //this.purchaseStore.updatePurchase(submittedProduct);
+          this.purchaseStore.updatePurchase(submittedPurchase);
         } else {
           // add book
           this.purchaseStore.addPurchase(submittedPurchase);
