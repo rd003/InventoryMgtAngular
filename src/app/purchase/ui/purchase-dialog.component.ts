@@ -5,7 +5,6 @@ import {
   Inject,
   OnDestroy,
   Output,
-  inject,
 } from "@angular/core";
 import {
   FormControl,
@@ -26,11 +25,11 @@ import { PurchaseModel } from "../purchase.model";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { provideNativeDateAdapter } from "@angular/material/core";
 import { getDateWithoutTimezone } from "../../utils/date-utils";
-import { EMPTY, Subject, map, switchMap, takeUntil, tap } from "rxjs";
+import { Observable, Subject, map, tap } from "rxjs";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
-import { ProductService } from "../../products/product.service";
 import { Product } from "../../products/product.model";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { AsyncPipe } from "@angular/common";
 
 @Component({
   selector: "app-purchase-dialog",
@@ -44,6 +43,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
     MatDialogModule,
     MatDatepickerModule,
     MatAutocompleteModule,
+    AsyncPipe,
   ],
   providers: [provideNativeDateAdapter()],
   template: ` <h1 mat-dialog-title>
@@ -84,7 +84,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
             #auto="matAutocomplete"
             [displayWith]="displayFn.bind(this)"
           >
-            @for (option of filteredProducts; track option.id) {
+            @for (option of filteredProducts$|async; track option.id) {
             <mat-option [value]="option.id">{{
               option.productName
             }}</mat-option>
@@ -139,8 +139,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 })
 export class PurchaseDialogComponent implements OnDestroy {
   @Output() sumbit = new EventEmitter<PurchaseModel>();
-  productService = inject(ProductService);
-  filteredProducts!: Product[] | undefined;
+  filteredProducts$!: Observable<Product[]> | undefined;
   destroy$ = new Subject<boolean>();
 
   purchaseForm: FormGroup = new FormGroup({
@@ -152,17 +151,11 @@ export class PurchaseDialogComponent implements OnDestroy {
     totalPrice: new FormControl<number>({ value: 0, disabled: true }),
   });
 
-  // displayFn(productId: number | null) {
-  //   if (!productId) return EMPTY;
-  //   return this.productService
-  //     .getProduct(productId)
-  //     .pipe(map((d) => d.productName));
-  // }
-
   displayFn(productId: number | null) {
-    if (!productId || !this.filteredProducts) return "";
+    if (!productId || !this.data.products) return "";
 
-    const product = this.filteredProducts.find((a) => a.id === productId);
+    const product = this.data.products.find((a) => a.id === productId);
+
     if (!product) return "";
     this._setPrice(product);
     this._setTotalPrice();
@@ -208,35 +201,26 @@ export class PurchaseDialogComponent implements OnDestroy {
     public data: {
       title: string;
       purchase: PurchaseModel | null;
+      products: Product[];
     }
   ) {
     if (data.purchase) {
       this.purchaseForm.patchValue(data.purchase);
-      // this.purchaseForm.get("productId")?.setValue(data.purchase.productId);
       this._setTotalPrice();
     }
     // on value changes of productId
-    this.purchaseForm
+    this.filteredProducts$ = this.purchaseForm
       .get<string>("productId")
       ?.valueChanges.pipe(
-        switchMap((value: string | null) => {
-          // console.log({ "on value changes": value });
-          if (!value) return EMPTY;
-          if (typeof value !== "string") return EMPTY;
-          return this.productService
-            .getProducts(1, 1000, value.toLowerCase(), "Id", "asc")
-            .pipe(
-              map((data) => {
-                // this.purchaseForm.get('price')?.setValue(data.TotalRecords)
-                return data.products;
-              })
-            );
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: (products) => (this.filteredProducts = products),
-      });
+        map((value) => {
+          if (!value || typeof value !== "string") return [];
+          const searchTerm = value ? value.toLocaleLowerCase() : "";
+          const filteredProducts = this.data.products.filter((a) =>
+            a.productName?.toLowerCase().includes(searchTerm)
+          );
+          return filteredProducts;
+        })
+      );
 
     // on value changes of quantity
     this.purchaseForm

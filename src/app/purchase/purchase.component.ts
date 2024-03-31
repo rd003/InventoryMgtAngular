@@ -14,9 +14,11 @@ import { PurchasePaginatorComponent } from "./ui/purchase-pagination.component";
 import { PurchaseFilters } from "./ui/purchase-filters.component";
 import { MatButtonModule } from "@angular/material/button";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, map, takeUntil } from "rxjs";
 import { PurchaseDialogComponent } from "./ui/purchase-dialog.component";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { Product } from "../products/product.model";
+import { ProductService } from "../products/product.service";
 
 @Component({
   selector: "app-purchase",
@@ -31,53 +33,62 @@ import { MatDialog, MatDialogModule } from "@angular/material/dialog";
     MatButtonModule,
     MatProgressSpinnerModule,
     MatDialogModule,
+    AsyncPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [provideComponentStore(PurchaseStore)],
   styles: [``],
   template: `
-    <div style="display: flex;align-items:center;gap:5px;margin-bottom:8px">
-      <span style="font-size: 26px;font-weight:bold"> Purchases </span>
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="onAddUpdate('Add Purchase')"
-      >
-        Add More
-      </button>
-    </div>
-    <ng-container *ngIf="this.purchaseStore.vm$ | async as vm">
-      <div *ngIf="vm.loading" class="spinner-center">
-        <mat-spinner diameter="50"></mat-spinner>
+    <ng-container *ngIf="products$ | async as products">
+      <div style="display: flex;align-items:center;gap:5px;margin-bottom:8px">
+        <span style="font-size: 26px;font-weight:bold"> Purchases </span>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="onAddUpdate('Add Purchase', null, products)"
+        >
+          Add More
+        </button>
       </div>
-      <div *ngIf="vm.purchases && vm.purchases.length > 0">
-        <app-purchase-filters
-          (searchProduct)="onSearch($event)"
-          (filterByPurchaseDate)="onDateFilter($event)"
-          (clearFilter)="onClearFilter()"
-        />
-        <app-purchase-list
-          [purchases]="vm.purchases"
-          (sort)="onSort($event)"
-          (delete)="onDelete($event)"
-          (edit)="onAddUpdate('Edit purchase', $event)"
-        />
+      <ng-container *ngIf="this.purchaseStore.vm$ | async as vm">
+        <div *ngIf="vm.loading" class="spinner-center">
+          <mat-spinner diameter="50"></mat-spinner>
+        </div>
+        <div *ngIf="vm.purchases && vm.purchases.length > 0">
+          <app-purchase-filters
+            (searchProduct)="onSearch($event)"
+            (filterByPurchaseDate)="onDateFilter($event)"
+            (clearFilter)="onClearFilter()"
+          />
+          <app-purchase-list
+            [purchases]="vm.purchases"
+            (sort)="onSort($event)"
+            (delete)="onDelete($event)"
+            (edit)="onAddUpdate('Edit purchase', $event, products)"
+          />
 
-        <app-purchase-paginator
-          [totalRecords]="vm.totalRecords"
-          (pageSelect)="onPageSelect($event)"
-        />
-      </div>
-      <ng-template #no_records>
-        <p style="margin-top:20px;font-size:21px">
-          No records found
-        </p></ng-template
-      >
+          <app-purchase-paginator
+            [totalRecords]="vm.totalRecords"
+            (pageSelect)="onPageSelect($event)"
+          />
+        </div>
+        <ng-template #no_records>
+          <p style="margin-top:20px;font-size:21px">
+            No records found
+          </p></ng-template
+        >
+      </ng-container>
     </ng-container>
   `,
 })
 export class PurchaseComponent implements OnDestroy {
   purchaseStore = inject(PurchaseStore);
+  productService = inject(ProductService);
+
+  products$ = this.productService
+    .getProducts(1, 1000)
+    .pipe(map((a) => a.products));
+
   dialog = inject(MatDialog);
   destroyed$ = new Subject<boolean>();
   onSort(sortData: { sortColumn: string; sortDirection: "asc" | "desc" }) {
@@ -104,9 +115,13 @@ export class PurchaseComponent implements OnDestroy {
     this.purchaseStore.setDateFilter({ dateFrom: null, dateTo: null });
     this.purchaseStore.setProductName(null);
   }
-  onAddUpdate(action: string, purchase: PurchaseModel | null = null) {
+  onAddUpdate(
+    action: string,
+    purchase: PurchaseModel | null = null,
+    products: Product[]
+  ) {
     const dialogRef = this.dialog.open(PurchaseDialogComponent, {
-      data: { purchase, title: action + " Book" },
+      data: { purchase, title: action + " Book", products },
     });
 
     dialogRef.componentInstance.sumbit
