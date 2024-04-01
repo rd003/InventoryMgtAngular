@@ -9,7 +9,7 @@ import { PaginationModel } from "../shared/models/pagination.model";
 @Injectable({ providedIn: "root" })
 export class StockService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = environment.API_BASE_URL;
+  private readonly baseUrl = environment.API_BASE_URL + "/stocks";
 
   getStocks(
     page = 1,
