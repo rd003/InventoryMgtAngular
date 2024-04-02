@@ -20,6 +20,9 @@ import { RouterModule } from "@angular/router";
         <button mat-button routerLink="/products" routerLinkActive="active">
           Products
         </button>
+        <button mat-button routerLink="/stock" routerLinkActive="active">
+          Stock
+        </button>
         <button mat-button routerLink="/purchases" routerLinkActive="active">
           Purchases
         </button>
