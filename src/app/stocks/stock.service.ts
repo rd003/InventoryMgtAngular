@@ -15,7 +15,7 @@ export class StockService {
     page = 1,
     limit = 4,
     sortColumn = "Id",
-    sortDirection = "desc",
+    sortDirection: "asc" | "desc" = "desc",
     searchTerm: string | null = null
   ): Observable<PaginatedStocks> {
     let parameters = new HttpParams()
@@ -23,6 +23,7 @@ export class StockService {
       .set("limit", limit)
       .set("sortColumn", sortColumn)
       .set("sortDirection", sortDirection);
+
     if (searchTerm) parameters = parameters.set("searchTerm", searchTerm);
     return this.http
       .get(this.baseUrl, {
