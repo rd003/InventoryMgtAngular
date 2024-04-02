@@ -1,9 +1,8 @@
 import { Injectable, inject } from "@angular/core";
-import { Observable, delay, map } from "rxjs";
+import { Observable, map } from "rxjs";
 import { PaginatedStocks, StockDisplayModel } from "./stock-display.model";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../environments/environment.development";
-import { PaginatedPurchase } from "../purchase/purchase.model";
 import { PaginationModel } from "../shared/models/pagination.model";
 
 @Injectable({ providedIn: "root" })
@@ -42,7 +41,6 @@ export class StockService {
           };
           return paginatedStock;
         })
-      )
-      .pipe(delay(300));
+      );
   }
 }

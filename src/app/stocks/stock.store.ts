@@ -71,7 +71,7 @@ export class StockStore
     (state, error: HttpErrorResponse) => ({ ...state, error })
   );
 
-  readonly setSearchTerm = this.updater((state, searchTerm: string) => ({
+  readonly setSearchTerm = this.updater((state, searchTerm: string | null) => ({
     ...state,
     searchTerm,
   }));
