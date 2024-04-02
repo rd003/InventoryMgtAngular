@@ -4,6 +4,7 @@ import { StockStore } from "./stock.store";
 import { AsyncPipe, NgIf } from "@angular/common";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { StockListComponent } from "./ui/stock-list.component";
+import { capitalize } from "../utils/init-cap.util";
 
 @Component({
   selector: "app-stock",
@@ -19,7 +20,7 @@ import { StockListComponent } from "./ui/stock-list.component";
       </div>
       } @else {
       <div *ngIf="vm.stocks && vm.stocks.length > 0; else no_records">
-        <app-stock-list [stocks]="vm.stocks" />
+        <app-stock-list [stocks]="vm.stocks" (sort)="onSort($event)" />
       </div>
       <ng-template #no_records>
         <p style="margin-top:20px;font-size:21px">No records found</p>
@@ -32,4 +33,9 @@ import { StockListComponent } from "./ui/stock-list.component";
 })
 export class StockComponent {
   stockStore = inject(StockStore);
+
+  onSort(sortData: { sortColumn: string; sortDirection: "asc" | "desc" }) {
+    this.stockStore.setSortColumn(capitalize(sortData.sortColumn));
+    this.stockStore.setSortDirection(sortData.sortDirection);
+  }
 }
