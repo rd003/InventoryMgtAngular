@@ -112,10 +112,10 @@ export class StockStore
     })
   );
 
-  readonly loadStocks = this.effect<StockDisplayModel[]>((products$) =>
-    products$.pipe(
-      tap(() => this.setLoading),
-      switchMap((products) => {
+  readonly loadStocks = this.effect<void>((trigger$) =>
+    trigger$.pipe(
+      tap(() => this.setLoading()),
+      switchMap(() => {
         const combined$ = combineLatest([
           this.searchTerm$,
           this.page$,
@@ -149,6 +149,6 @@ export class StockStore
   }
 
   ngrxOnStateInit() {
-    //load stocks here
+    this.loadStocks();
   }
 }
