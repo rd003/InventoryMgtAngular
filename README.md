@@ -10,9 +10,10 @@ Run `ng serve --open`
 
 - Angular 17
 - Angular material
-- [.Net 8 apis] (https://github.com/rd003/InventoryMgt_AspNetCore_Backend) for backend
+- Ngrx componnent store
+- [.Net 8 apis](https://github.com/rd003/InventoryMgt_AspNetCore_Backend) for backend
 
 ## Backend url
 
 Backend of this project made with .net core 8 apis.
-For running this project.You need both projects. Please follow this [link] (https://github.com/rd003/InventoryMgt_AspNetCore_Backend) to get the backend project.
+For running this project.You need both projects. Please follow this [link](https://github.com/rd003/InventoryMgt_AspNetCore_Backend) to get the backend project.
