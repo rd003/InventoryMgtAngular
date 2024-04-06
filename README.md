@@ -10,6 +10,7 @@ Run `ng serve --open`
 
 - Angular 17
 - Angular material
+- Ngrx componnent store
 - [.Net 8 apis](https://github.com/rd003/InventoryMgt_AspNetCore_Backend) for backend
 
 ## Backend url
