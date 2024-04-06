@@ -4,6 +4,7 @@ import { PaginatedProduct, Product } from "./product.model";
 import { Observable, map } from "rxjs";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { PaginationModel } from "../shared/models/pagination.model";
+import { ProductWithStock } from "./product-with-stock.model";
 
 @Injectable({
   providedIn: "root",
@@ -64,5 +65,11 @@ export class ProductService {
           return productResponse;
         })
       );
+  }
+
+  getAllProductsWithStock(): Observable<ProductWithStock[]> {
+    return this.#http.get<ProductWithStock[]>(
+      this.#baseUrl + "/all-products-with-stock"
+    );
   }
 }
