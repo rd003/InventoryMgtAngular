@@ -27,9 +27,9 @@ import { provideNativeDateAdapter } from "@angular/material/core";
 import { getDateWithoutTimezone } from "../../utils/date-utils";
 import { Observable, Subject, map, tap } from "rxjs";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
-import { Product } from "../../products/product.model";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { AsyncPipe } from "@angular/common";
+import { ProductWithStock } from "../../products/product-with-stock.model";
 
 @Component({
   selector: "app-purchase-dialog",
@@ -139,7 +139,7 @@ import { AsyncPipe } from "@angular/common";
 })
 export class PurchaseDialogComponent implements OnDestroy {
   @Output() sumbit = new EventEmitter<PurchaseModel>();
-  filteredProducts$!: Observable<Product[]> | undefined;
+  filteredProducts$!: Observable<ProductWithStock[]> | undefined;
   destroy$ = new Subject<boolean>();
 
   purchaseForm: FormGroup = new FormGroup({
@@ -157,13 +157,13 @@ export class PurchaseDialogComponent implements OnDestroy {
     const product = this.data.products.find((a) => a.id === productId);
 
     if (!product) return "";
-    this._setPrice(product);
+    this._setPrice(product.price);
     this._setTotalPrice();
     return product.productName;
   }
 
-  private _setPrice(product: Product) {
-    this.purchaseForm.get("price")?.setValue(product.price);
+  private _setPrice(price: number) {
+    this.purchaseForm.get("price")?.setValue(price);
   }
 
   private _setTotalPrice() {
@@ -201,7 +201,7 @@ export class PurchaseDialogComponent implements OnDestroy {
     public data: {
       title: string;
       purchase: PurchaseModel | null;
-      products: Product[];
+      products: ProductWithStock[];
     }
   ) {
     if (data.purchase) {

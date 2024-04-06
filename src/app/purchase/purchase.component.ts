@@ -14,11 +14,12 @@ import { PurchasePaginatorComponent } from "./ui/purchase-pagination.component";
 import { PurchaseFilters } from "./ui/purchase-filters.component";
 import { MatButtonModule } from "@angular/material/button";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-import { Subject, map, takeUntil } from "rxjs";
+import { Observable, Subject, map, takeUntil, tap } from "rxjs";
 import { PurchaseDialogComponent } from "./ui/purchase-dialog.component";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { Product } from "../products/product.model";
 import { ProductService } from "../products/product.service";
+import { ProductWithStock } from "../products/product-with-stock.model";
 
 @Component({
   selector: "app-purchase",
@@ -85,9 +86,8 @@ export class PurchaseComponent implements OnDestroy {
   purchaseStore = inject(PurchaseStore);
   productService = inject(ProductService);
 
-  products$ = this.productService
-    .getProducts(1, 1000)
-    .pipe(map((a) => a.products));
+  products$: Observable<ProductWithStock[]> =
+    this.productService.getAllProductsWithStock();
 
   dialog = inject(MatDialog);
   destroyed$ = new Subject<boolean>();
@@ -118,7 +118,7 @@ export class PurchaseComponent implements OnDestroy {
   onAddUpdate(
     action: string,
     purchase: PurchaseModel | null = null,
-    products: Product[]
+    products: ProductWithStock[]
   ) {
     const dialogRef = this.dialog.open(PurchaseDialogComponent, {
       data: { purchase, title: action + " Book", products },
