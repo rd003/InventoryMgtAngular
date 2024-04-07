@@ -176,8 +176,8 @@ export class SaleStore
                   tapResponse(
                     (paginatedSale) => {
                       this.addAllSaleRecordsToStore(paginatedSale.sales);
-                      this.setPage(paginatedSale.Page),
-                        this.setLimit(paginatedSale.Limit);
+                      //   this.setPage(paginatedSale.Page),
+                      //  this.setLimit(paginatedSale.Limit);
                       this.setTotalRecords(paginatedSale.TotalRecords);
                     },
                     (error: HttpErrorResponse) => this.setError(error)
@@ -192,5 +192,7 @@ export class SaleStore
   constructor() {
     super(initialState);
   }
-  ngrxOnStateInit() {}
+  ngrxOnStateInit() {
+    this.loadSales();
+  }
 }

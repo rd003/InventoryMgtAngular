@@ -17,7 +17,6 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { Observable, Subject, map, takeUntil, tap } from "rxjs";
 import { PurchaseDialogComponent } from "./ui/purchase-dialog.component";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
-import { Product } from "../products/product.model";
 import { ProductService } from "../products/product.service";
 import { ProductWithStock } from "../products/product-with-stock.model";
 

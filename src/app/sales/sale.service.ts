@@ -1,10 +1,11 @@
-import { inject } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { environment } from "../../environments/environment.development";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { PaginatedSale, SaleModel } from "../category/sale.model";
 import { Observable, map } from "rxjs";
 import { PaginationModel } from "../shared/models/pagination.model";
 
+@Injectable({ providedIn: "root" })
 export class SaleService {
   private readonly baseUrl = environment.API_BASE_URL + "/sales";
   private readonly http = inject(HttpClient);
