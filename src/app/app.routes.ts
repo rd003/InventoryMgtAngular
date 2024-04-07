@@ -36,6 +36,11 @@ export const routes: Routes = [
     pathMatch: "full",
   },
   {
+    path: "sales",
+    loadComponent: () =>
+      import("./sales/sale.component").then((c) => c.SaleComponent),
+  },
+  {
     path: "stock",
     loadComponent: () =>
       import("./stocks/stock.component").then((a) => a.StockComponent),

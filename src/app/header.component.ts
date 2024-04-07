@@ -26,6 +26,9 @@ import { RouterModule } from "@angular/router";
         <button mat-button routerLink="/purchases" routerLinkActive="active">
           Purchases
         </button>
+        <button mat-button routerLink="/sales" routerLinkActive="active">
+          Sales
+        </button>
         <span class="example-spacer"></span>
 
         <button mat-button>Login</button>
