@@ -2,7 +2,7 @@ import { Injectable, inject } from "@angular/core";
 import { environment } from "../../environments/environment.development";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { PaginatedSale, SaleModel } from "../category/sale.model";
-import { Observable, map } from "rxjs";
+import { Observable, delay, map } from "rxjs";
 import { PaginationModel } from "../shared/models/pagination.model";
 
 @Injectable({ providedIn: "root" })
@@ -62,7 +62,8 @@ export class SaleService {
           const paginatedSale: PaginatedSale = { ...pagination, sales };
           return paginatedSale;
         })
-      );
+      )
+      .pipe(delay(400));
 
     //
   }

@@ -110,6 +110,18 @@ export class SaleStore
     totalRecords,
   }));
 
+  readonly setSortColumn = this.updater((state, sortColumn: string) => ({
+    ...state,
+    sortColumn,
+  }));
+
+  readonly setSortDirection = this.updater(
+    (state, sortDirection: "asc" | "desc") => ({
+      ...state,
+      sortDirection,
+    })
+  );
+
   private readonly addAllSaleRecordsToStore = this.updater(
     (state, sales: SaleModel[]) => ({ ...state, sales, loading: false })
   );
