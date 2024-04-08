@@ -1,5 +1,10 @@
 import { AsyncPipe, NgIf } from "@angular/common";
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  inject,
+} from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { provideComponentStore } from "@ngrx/component-store";
 import { SaleStore } from "./sale.store";
@@ -10,7 +15,9 @@ import { SaleFiltersComponent } from "./ui/sale-filters.component";
 import { SaleModel } from "../category/sale.model";
 import { capitalize } from "../utils/init-cap.util";
 import { ProductWithStock } from "../products/product-with-stock.model";
-import { Observable } from "rxjs";
+import { Observable, Subject, takeUntil } from "rxjs";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { SaleDialogComponent } from "./ui/sale-dialog.component";
 
 @Component({
   selector: "app-sale",
@@ -23,6 +30,7 @@ import { Observable } from "rxjs";
     MatProgressSpinnerModule,
     SaleListComponent,
     SaleFiltersComponent,
+    MatDialogModule,
   ],
   providers: [provideComponentStore(SaleStore)],
   styles: [``],
@@ -30,7 +38,11 @@ import { Observable } from "rxjs";
     <ng-container *ngIf="products$ | async as products">
       <div style="display: flex;align-items:center;gap:5px;margin-bottom:8px">
         <span style="font-size: 26px;font-weight:bold"> Sales </span>
-        <button mat-raised-button color="primary" (click)="({})">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="onAddUpdate('Add', null, products)"
+        >
           Add More
         </button>
 
@@ -49,16 +61,18 @@ import { Observable } from "rxjs";
 
           }
         </ng-container>
-        <app-sale-list (edit)="onAddUpdate('Update sale', $event, products)" />
+        <app-sale-list (edit)="onAddUpdate('Update', $event, products)" />
       </div>
     </ng-container>
   `,
 })
-export class SaleComponent {
+export class SaleComponent implements OnDestroy {
   saleStore = inject(SaleStore);
   productService = inject(ProductService);
   products$: Observable<ProductWithStock[]> =
     this.productService.getAllProductsWithStock();
+  destroyed$ = new Subject<boolean>();
+  dialog = inject(MatDialog);
 
   onSort(sortData: { sortColumn: string; sortDirection: "asc" | "desc" }) {
     this.saleStore.setSortColumn(capitalize(sortData.sortColumn));
@@ -69,7 +83,26 @@ export class SaleComponent {
     action: string,
     sale: SaleModel | null = null,
     products: ProductWithStock[]
-  ) {}
+  ) {
+    const dialogRef = this.dialog.open(SaleDialogComponent, {
+      data: { sale, title: action + " Sale", products },
+    });
+
+    // dialogRef.componentInstance.sumbit
+    //   .pipe(takeUntil(this.destroyed$))
+    //   .subscribe((submittedSale) => {
+    //     if (!submittedSale) return;
+    //     if (submittedSale.id && submittedSale.id > 0) {
+    //       // update book
+    //       // this.saleStore.updateSale(submittedSale);
+    //     } else {
+    //       // add book
+    //      // this.saleStore.addSale(submittedSale);
+    //     }
+    //     dialogRef.componentInstance.saleForm.reset();
+    //     dialogRef.componentInstance.onCanceled();
+    //   });
+  }
 
   onDelete(sale: SaleModel) {
     if (window.confirm("Are you sure to delete?")) {
@@ -78,4 +111,9 @@ export class SaleComponent {
   }
 
   constructor() {}
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.unsubscribe();
+  }
 }
