@@ -19,7 +19,7 @@ export class SaleService {
     return this.http.put<SaleModel>(url, sale);
   }
 
-  deleteSale(id: string): Observable<any> {
+  deleteSale(id: number): Observable<any> {
     const url = `${this.baseUrl}/${id}`;
     return this.http.delete<any>(url);
   }

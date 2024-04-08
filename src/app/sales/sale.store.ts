@@ -189,6 +189,48 @@ export class SaleStore
     )
   );
 
+  addSale = this.effect<SaleModel>((trigger$) =>
+    trigger$.pipe(
+      tap(() => this.setLoading()),
+      switchMap((sale) =>
+        this.saleService.addSale(sale).pipe(
+          tapResponse(
+            (response) => this.addSingleRecordToStore(response),
+            (error: HttpErrorResponse) => this.setError(error)
+          )
+        )
+      )
+    )
+  );
+
+  updateSale = this.effect<SaleModel>((trigger$) =>
+    trigger$.pipe(
+      tap(() => this.setLoading()),
+      switchMap((sale) =>
+        this.saleService.updateSale(sale).pipe(
+          tapResponse(
+            (response) => this.UpdateSaleRecordOfStore(response),
+            (error: HttpErrorResponse) => this.setError(error)
+          )
+        )
+      )
+    )
+  );
+
+  deleteSale = this.effect<number>((trigger$) =>
+    trigger$.pipe(
+      tap(() => this.setLoading),
+      switchMap((id) =>
+        this.saleService.deleteSale(id).pipe(
+          tapResponse(
+            () => this.removeRecordFromStore(id),
+            (error: HttpErrorResponse) => this.setError(error)
+          )
+        )
+      )
+    )
+  );
+
   constructor() {
     super(initialState);
   }
