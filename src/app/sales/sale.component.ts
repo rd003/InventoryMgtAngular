@@ -18,20 +18,12 @@ import { ProductWithStock } from "../products/product-with-stock.model";
 import { Observable, Subject, takeUntil } from "rxjs";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { SaleDialogComponent } from "./ui/sale-dialog.component";
+import { SalePaginatorComponent } from "./ui/sale-paginator.component";
 
 @Component({
   selector: "app-sale",
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    NgIf,
-    AsyncPipe,
-    MatButtonModule,
-    MatProgressSpinnerModule,
-    SaleListComponent,
-    SaleFiltersComponent,
-    MatDialogModule,
-  ],
   providers: [provideComponentStore(SaleStore)],
   styles: [``],
   template: `
@@ -61,6 +53,8 @@ import { SaleDialogComponent } from "./ui/sale-dialog.component";
             (edit)="onAddUpdate('Update', $event, products)"
             (delete)="onDelete($event)"
           />
+
+          <app-sale-paginator [totalRecords]="vm.totalRecords" />
         </div>
         <ng-template #no_records>
           <p style="margin-top:20px;font-size:21px">
@@ -72,6 +66,16 @@ import { SaleDialogComponent } from "./ui/sale-dialog.component";
       </ng-container>
     </ng-container>
   `,
+  imports: [
+    NgIf,
+    AsyncPipe,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+    SaleListComponent,
+    SaleFiltersComponent,
+    MatDialogModule,
+    SalePaginatorComponent,
+  ],
 })
 export class SaleComponent implements OnDestroy {
   saleStore = inject(SaleStore);
