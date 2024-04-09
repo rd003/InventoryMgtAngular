@@ -3,7 +3,6 @@ import {
   Component,
   EventEmitter,
   Inject,
-  OnDestroy,
   Output,
 } from "@angular/core";
 import {
@@ -137,10 +136,9 @@ import { ProductWithStock } from "../../products/product-with-stock.model";
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PurchaseDialogComponent implements OnDestroy {
+export class PurchaseDialogComponent {
   @Output() sumbit = new EventEmitter<PurchaseModel>();
   filteredProducts$!: Observable<ProductWithStock[]> | undefined;
-  destroy$ = new Subject<boolean>();
 
   purchaseForm: FormGroup = new FormGroup({
     id: new FormControl<number>(0),
@@ -191,10 +189,7 @@ export class PurchaseDialogComponent implements OnDestroy {
       this.sumbit.emit({ ...purchase, purchaseDate });
     }
   }
-  ngOnDestroy(): void {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
-  }
+
   constructor(
     public dialogRef: MatDialogRef<PurchaseDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
