@@ -153,7 +153,7 @@ export class SaleStore
 
   readonly loadSales = this.effect<void>((trigger$) =>
     trigger$.pipe(
-      tap((_) => this.setLoading),
+      tap((_) => this.setLoading()),
       exhaustMap(() => {
         const combined$ = combineLatest([
           this.page$,
@@ -232,7 +232,7 @@ export class SaleStore
 
   deleteSale = this.effect<number>((trigger$) =>
     trigger$.pipe(
-      tap(() => this.setLoading),
+      tap(() => this.setLoading()),
       switchMap((id) =>
         this.saleService.deleteSale(id).pipe(
           tapResponse(

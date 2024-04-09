@@ -24,10 +24,10 @@ import { SaleModel } from "../../category/sale.model";
   ],
   template: `
     <table
-      mat-table
-      [dataSource]="sales"
       class="mat-elevation-z8"
-      style="margin-top:1.5 rem;"
+      mat-table
+      style=" margin-top: 1.5rem;"
+      [dataSource]="sales"
       matSort
       (matSortChange)="onSortData($event)"
     >
@@ -38,10 +38,10 @@ import { SaleModel } from "../../category/sale.model";
           mat-sort-header
           sortActionDescription="sort by selling date"
         >
-          Purchase Date
+          Selling Date
         </th>
-        <td mat-cell *matCellDef="let purchase">
-          {{ purchase.purchaseDate | date : "dd-MM-yyyy HH:MM" }}
+        <td mat-cell *matCellDef="let sale">
+          {{ sale.sellingDate | date : "dd-MM-yyyy HH:MM" }}
         </td>
       </ng-container>
       <ng-container matColumnDef="productName">
@@ -74,12 +74,12 @@ import { SaleModel } from "../../category/sale.model";
 
       <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef>Action</th>
-        <td mat-cell *matCellDef="let purchase">
+        <td mat-cell *matCellDef="let sale">
           <button
             mat-mini-fab
             color="primary"
             aria-label="Edit"
-            (click)="edit.emit(purchase)"
+            (click)="edit.emit(sale)"
           >
             <mat-icon>edit</mat-icon>
           </button>
@@ -88,47 +88,22 @@ import { SaleModel } from "../../category/sale.model";
             mat-mini-fab
             color="warn"
             aria-label="Delete"
-            (click)="delete.emit(purchase)"
+            (click)="delete.emit(sale)"
           >
             <mat-icon>delete</mat-icon>
           </button>
         </td>
       </ng-container>
 
-      <th mat-header-row *matHeaderRowDef="displayedColumns"></th>
-      <td mat-row *matRowDef="let row; columns: displayedColumns"></td>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
   `,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SaleListComponent {
-  @Input() sales: SaleModel[] = [
-    {
-      id: 1,
-      sellingDate: "04-05-2024",
-      createDate: "04-05-2024",
-      updateDate: "04-05-2024",
-      productId: 18,
-      productName: "belt",
-      description: "1 belt",
-      isDeleted: false,
-      price: 100,
-      quantity: 2,
-    },
-    {
-      id: 1,
-      sellingDate: "02-05-2024",
-      createDate: "05-05-2024",
-      updateDate: "06-05-2024",
-      productId: 16,
-      productName: "pencil box",
-      description: "3 pencil box",
-      isDeleted: false,
-      price: 50,
-      quantity: 3,
-    },
-  ];
+  @Input({ required: true }) sales!: SaleModel[];
   @Output() edit = new EventEmitter<SaleModel>();
   @Output() delete = new EventEmitter<SaleModel>();
   @Output() sort = new EventEmitter<{

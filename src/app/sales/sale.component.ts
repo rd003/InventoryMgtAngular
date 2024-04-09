@@ -47,24 +47,28 @@ import { SaleDialogComponent } from "./ui/sale-dialog.component";
         >
           Add More
         </button>
-
-        <ng-container *ngIf="this.saleStore.vm$ | async as vm">
-          @if(vm.loading){
-          <div class="spinner-center">
-            <mat-spinner diameter="50"></mat-spinner>
-          </div>
-          } @else {
-          <div *ngIf="vm.sales && vm.sales.length > 0; else no_records"></div>
-          <ng-template #no_records>
-            <p style="margin-top:20px;font-size:21px">
-              No records found
-            </p></ng-template
-          >
-
-          }
-        </ng-container>
-        <app-sale-list (edit)="onAddUpdate('Update', $event, products)" />
       </div>
+
+      <ng-container *ngIf="this.saleStore.vm$ | async as vm">
+        @if(vm.loading){
+        <div class="spinner-center">
+          <mat-spinner diameter="50"></mat-spinner>
+        </div>
+        } @else {
+        <div *ngIf="vm.sales && vm.sales.length > 0; else no_records">
+          <app-sale-list
+            [sales]="vm.sales"
+            (edit)="onAddUpdate('Update', $event, products)"
+          />
+        </div>
+        <ng-template #no_records>
+          <p style="margin-top:20px;font-size:21px">
+            No records found
+          </p></ng-template
+        >
+
+        }
+      </ng-container>
     </ng-container>
   `,
 })
