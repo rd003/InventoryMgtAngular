@@ -103,6 +103,18 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
         </mat-form-field>
 
         <mat-form-field appearance="outline">
+          <mat-label>Description</mat-label>
+          <textarea
+            formControlName="description"
+            matInput
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="1"
+            cdkAutosizeMaxRows="5"
+          >
+          </textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
           <mat-label>Total Price</mat-label>
           <input type="number" formControlName="totalPrice" matInput />
         </mat-form-field>
@@ -147,6 +159,7 @@ export class SaleDialogComponent {
     productId: new FormControl<number | null>(null, Validators.required),
     price: new FormControl<number>(0, Validators.required),
     quantity: new FormControl<number>(1, Validators.required),
+    description: new FormControl<string>(""),
     totalPrice: new FormControl<number>({ value: 0, disabled: true }),
   });
 

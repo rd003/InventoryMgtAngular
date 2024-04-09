@@ -54,12 +54,12 @@ import { SaleDialogComponent } from "./ui/sale-dialog.component";
             <mat-spinner diameter="50"></mat-spinner>
           </div>
           } @else {
-          <!-- <div *ngIf="vm.sales && vm.sales.length > 0; else no_records"></div>
-        <ng-template #no_records>
-             <p style="margin-top:20px;font-size:21px">
-            No records found
-          </p></ng-template
-        </ng-template> -->
+          <div *ngIf="vm.sales && vm.sales.length > 0; else no_records"></div>
+          <ng-template #no_records>
+            <p style="margin-top:20px;font-size:21px">
+              No records found
+            </p></ng-template
+          >
 
           }
         </ng-container>
