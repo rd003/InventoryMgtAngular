@@ -37,7 +37,9 @@ import { SaleDialogComponent } from "./ui/sale-dialog.component";
   template: `
     <ng-container *ngIf="products$ | async as products">
       <div style="display: flex;align-items:center;gap:5px;margin-bottom:8px">
-        <span style="font-size: 26px;font-weight:bold"> Sales </span>
+        <span style="font-size: 26px;font-weight:bold;color:red">
+          Sales (Update the quantity in dropdwon after sale )
+        </span>
         <button
           mat-raised-button
           color="primary"
@@ -88,20 +90,25 @@ export class SaleComponent implements OnDestroy {
       data: { sale, title: action + " Sale", products },
     });
 
-    // dialogRef.componentInstance.sumbit
-    //   .pipe(takeUntil(this.destroyed$))
-    //   .subscribe((submittedSale) => {
-    //     if (!submittedSale) return;
-    //     if (submittedSale.id && submittedSale.id > 0) {
-    //       // update book
-    //       // this.saleStore.updateSale(submittedSale);
-    //     } else {
-    //       // add book
-    //      // this.saleStore.addSale(submittedSale);
-    //     }
-    //     dialogRef.componentInstance.saleForm.reset();
-    //     dialogRef.componentInstance.onCanceled();
-    //   });
+    dialogRef.componentInstance.submit
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((submittedSale) => {
+        if (!submittedSale) return;
+        //console.log(submittedSale);
+        if (submittedSale.id && submittedSale.id > 0) {
+          // update book
+          // this.saleStore.updateSale(submittedSale);
+        } else {
+          // add book
+          this.saleStore.addSale(submittedSale);
+        }
+        dialogRef.componentInstance.saleForm.reset();
+        dialogRef.componentInstance.updateProductListQuatity(
+          submittedSale.productId,
+          submittedSale.quantity
+        );
+        dialogRef.componentInstance.onCanceled();
+      });
   }
 
   onDelete(sale: SaleModel) {

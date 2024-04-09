@@ -176,13 +176,30 @@ export class SaleDialogComponent {
     }
   }
 
+  updateProductListQuatity(productId: number, quantity: number) {
+    const updatedProducts = this.data.products.map((product) => {
+      if (product.id !== productId) return product;
+      return {
+        ...product,
+        quantity: product.quantity - quantity,
+      };
+    });
+    console.log(updatedProducts);
+
+    this.data.products = [...updatedProducts];
+  }
+
   onCanceled() {
     this.dialogRef.close();
   }
 
   onSubmit() {
     const sale = Object.assign(this.saleForm.value) as SaleModel;
-    if (!this.selectedProductQuantity) return;
+    if (sale.quantity < 1) {
+      window.alert(`Qauntity must be greater than 0`);
+      return;
+    }
+    if (this.selectedProductQuantity === null) return;
     if (this.selectedProductQuantity < sale.quantity) {
       window.alert(`only ${this.selectedProductQuantity} items are remained.`);
       return;

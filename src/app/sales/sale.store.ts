@@ -78,6 +78,7 @@ export class SaleStore
   private readonly setError = this.updater(
     (state, error: HttpErrorResponse) => ({
       ...state,
+      loading: false,
       error,
     })
   );
