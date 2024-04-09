@@ -59,6 +59,7 @@ import { SaleDialogComponent } from "./ui/sale-dialog.component";
           <app-sale-list
             [sales]="vm.sales"
             (edit)="onAddUpdate('Update', $event, products)"
+            (delete)="onDelete($event)"
           />
         </div>
         <ng-template #no_records>
