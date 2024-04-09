@@ -101,7 +101,7 @@ export class SaleComponent implements OnDestroy {
         //console.log(submittedSale);
         if (submittedSale.id && submittedSale.id > 0) {
           // update book
-          // this.saleStore.updateSale(submittedSale);
+          this.saleStore.updateSale(submittedSale);
         } else {
           // add book
           this.saleStore.addSale(submittedSale);
