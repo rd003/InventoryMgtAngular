@@ -48,6 +48,11 @@ import { SalePaginatorComponent } from "./ui/sale-paginator.component";
         </div>
         } @else {
         <div *ngIf="vm.sales && vm.sales.length > 0; else no_records">
+          <app-sale-filters
+            (clearFilter)="onClearFilter()"
+            (searchProduct)="onSearch($event)"
+            (filterByPurchaseDate)="onDateFilter($event)"
+          />
           <app-sale-list
             [sales]="vm.sales"
             (edit)="onAddUpdate('Update', $event, products)"
@@ -124,6 +129,21 @@ export class SaleComponent implements OnDestroy {
     if (window.confirm("Are you sure to delete?")) {
       this.saleStore.deleteSale(sale.id);
     }
+  }
+
+  onSearch(productName: string | null) {
+    this.saleStore.setProductName(productName);
+  }
+
+  onDateFilter(dateRange: { dateFrom: string | null; dateTo: string | null }) {
+    if (dateRange.dateFrom && dateRange.dateTo) {
+      this.saleStore.setDateFilter({ ...dateRange });
+    }
+  }
+
+  onClearFilter() {
+    this.saleStore.setDateFilter({ dateFrom: null, dateTo: null });
+    this.saleStore.setProductName(null);
   }
 
   constructor() {}

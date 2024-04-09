@@ -83,13 +83,18 @@ export class SaleStore
     })
   );
 
-  readonly setProductName = this.updater((state, productName: string) => ({
-    ...state,
-    productName,
-  }));
+  readonly setProductName = this.updater(
+    (state, productName: string | null) => ({
+      ...state,
+      productName,
+    })
+  );
 
   readonly setDateFilter = this.updater(
-    (state, dateFilters: { dateFrom: string; dateTo: string }) => ({
+    (
+      state,
+      dateFilters: { dateFrom: string | null; dateTo: string | null }
+    ) => ({
       ...state,
       dateFrom: dateFilters.dateFrom,
       dateTo: dateFilters.dateTo,
