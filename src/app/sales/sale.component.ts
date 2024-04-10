@@ -30,7 +30,7 @@ import { SalePaginatorComponent } from "./ui/sale-paginator.component";
     <ng-container *ngIf="products$ | async as products">
       <div style="display: flex;align-items:center;gap:5px;margin-bottom:8px">
         <span style="font-size: 26px;font-weight:bold;color:red">
-          Sales (Update the quantity in dropdwon after sale )
+          Sales (Not updating the quantity in the dropdwon after sale update )
         </span>
         <button
           mat-raised-button
@@ -56,6 +56,7 @@ import { SalePaginatorComponent } from "./ui/sale-paginator.component";
           <app-sale-list
             [sales]="vm.sales"
             (edit)="onAddUpdate('Update', $event, products)"
+            (sort)="onSort($event)"
             (delete)="onDelete($event)"
           />
 
