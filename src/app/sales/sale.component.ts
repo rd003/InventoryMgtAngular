@@ -15,7 +15,7 @@ import { SaleFiltersComponent } from "./ui/sale-filters.component";
 import { SaleModel } from "../category/sale.model";
 import { capitalize } from "../utils/init-cap.util";
 import { ProductWithStock } from "../products/product-with-stock.model";
-import { Observable, Subject, takeUntil } from "rxjs";
+import { Observable, Subject, map, takeUntil } from "rxjs";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { SaleDialogComponent } from "./ui/sale-dialog.component";
 import { SalePaginatorComponent } from "./ui/sale-paginator.component";
@@ -116,13 +116,27 @@ export class SaleComponent implements OnDestroy {
           // add book
           this.saleStore.addSale(submittedSale);
         }
-        dialogRef.componentInstance.saleForm.reset();
-        dialogRef.componentInstance.updateProductListQuatity(
+        this._updateProductListQuatity(
           submittedSale.productId,
           submittedSale.quantity
         );
+        dialogRef.componentInstance.saleForm.reset();
         dialogRef.componentInstance.onCanceled();
       });
+  }
+
+  private _updateProductListQuatity(productId: number, quantity: number) {
+    this.products$ = this.products$.pipe(
+      map((products) => {
+        return products.map((product) => {
+          if (product.id !== productId) return product;
+          return {
+            ...product,
+            quantity: product.quantity - quantity,
+          };
+        });
+      })
+    );
   }
 
   onDelete(sale: SaleModel) {
