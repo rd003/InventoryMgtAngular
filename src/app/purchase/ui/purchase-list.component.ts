@@ -74,6 +74,11 @@ import { MatSortModule, Sort } from "@angular/material/sort";
         </td>
       </ng-container>
 
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef>Description</th>
+        <td mat-cell *matCellDef="let purchase">{{ purchase.description }}</td>
+      </ng-container>
+
       <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef>Action</th>
         <td mat-cell *matCellDef="let purchase">
@@ -122,6 +127,7 @@ export class PurchaseListComponent {
     "productName",
     "price",
     "quantity",
+    "description",
     "totalPrice",
     "action",
   ];
