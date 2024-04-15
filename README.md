@@ -17,3 +17,5 @@ Run `ng serve --open`
 
 Backend of this project made with .net core 8 apis.
 For running this project.You need both projects. Please follow this [link](https://github.com/rd003/InventoryMgt_AspNetCore_Backend) to get the backend project.
+
+![Inventory Management Screenshot](https://github.com/rd003/InventoryMgtAngular/blob/master/screenshot1.jpg)
