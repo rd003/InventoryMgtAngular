@@ -60,7 +60,10 @@ import { SalePaginatorComponent } from "./ui/sale-paginator.component";
             (delete)="onDelete($event)"
           />
 
-          <app-sale-paginator [totalRecords]="vm.totalRecords" />
+          <app-sale-paginator
+            [totalRecords]="vm.totalRecords"
+            (pageSelect)="onPageSelect($event)"
+          />
         </div>
         <ng-template #no_records>
           <p style="margin-top:20px;font-size:21px">
@@ -159,6 +162,11 @@ export class SaleComponent implements OnDestroy {
   onClearFilter() {
     this.saleStore.setDateFilter({ dateFrom: null, dateTo: null });
     this.saleStore.setProductName(null);
+  }
+
+  onPageSelect(pageData: { page: number; limit: number }) {
+    this.saleStore.setPage(pageData.page);
+    this.saleStore.setLimit(pageData.limit);
   }
 
   constructor() {}
