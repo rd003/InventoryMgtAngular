@@ -38,7 +38,7 @@ import { SaleModel } from "../../category/sale.model";
           mat-sort-header
           sortActionDescription="sort by selling date"
         >
-          Selling Date
+          Selling Date (dd-MM-yyyy)
         </th>
         <td mat-cell *matCellDef="let sale">
           {{ sale.sellingDate | date : "dd-MM-yyyy HH:MM" }}

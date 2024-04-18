@@ -40,7 +40,7 @@ import { MatSortModule, Sort } from "@angular/material/sort";
           mat-sort-header
           sortActionDescription="sort by purchase date"
         >
-          Purchase Date
+          Purchase Date(dd-MM-yyyy)
         </th>
         <td mat-cell *matCellDef="let purchase">
           {{ purchase.purchaseDate | date : "dd-MM-yyyy HH:MM" }}
