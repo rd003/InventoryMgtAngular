@@ -29,9 +29,7 @@ import { SalePaginatorComponent } from "./ui/sale-paginator.component";
   template: `
     <ng-container *ngIf="products$ | async as products">
       <div style="display: flex;align-items:center;gap:5px;margin-bottom:8px">
-        <span style="font-size: 26px;font-weight:bold;color:red">
-          Sales (Not updating the quantity in the dropdwon after sale update )
-        </span>
+        <span style="font-size: 26px;font-weight:bold;"> Sales </span>
         <button
           mat-raised-button
           color="primary"
