@@ -15,7 +15,7 @@ import { SaleFiltersComponent } from "./ui/sale-filters.component";
 import { SaleModel } from "../category/sale.model";
 import { capitalize } from "../utils/init-cap.util";
 import { ProductWithStock } from "../products/product-with-stock.model";
-import { Observable, Subject, map, takeUntil } from "rxjs";
+import { Observable, Subject, map, switchMap, takeUntil } from "rxjs";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { SaleDialogComponent } from "./ui/sale-dialog.component";
 import { SalePaginatorComponent } from "./ui/sale-paginator.component";
@@ -115,39 +115,46 @@ export class SaleComponent implements OnDestroy {
         //console.log(submittedSale);
         if (submittedSale.id && submittedSale.id > 0) {
           // update book
-          // this.saleStore.updateSale(submittedSale);
+          this.saleStore.updateSale(submittedSale);
         } else {
           // add book
-          //this.saleStore.addSale(submittedSale);
+          this.saleStore.addSale(submittedSale);
         }
-        this._updateProductListQuatity(
-          submittedSale.productId,
-          submittedSale.quantity
-        );
+        this._updateProductListQuantity();
         dialogRef.componentInstance.saleForm.reset();
         dialogRef.componentInstance.onCanceled();
       });
   }
 
-  private _updateProductListQuatity(productId: number, quantity: number) {
+  private _updateProductListQuantity() {
     this.products$ = this.products$.pipe(
-      map((products) => {
-        return products.map((product) => {
-          if (product.id !== productId) return product;
-          const newState: ProductWithStock = {
-            ...product,
-            quantity: product.quantity - quantity,
-          };
-          console.log({ prev: product.quantity, new: newState.quantity });
-          return newState;
-        });
+      switchMap(() => {
+        return this.productService.getAllProductsWithStock();
       })
     );
   }
 
+  //private _updateProductListQuatity(productId: number, quantity: number) {
+  // this.products$ = this.products$.pipe(
+  //   map((products) => {
+  //     return products.map((product) => {
+  //       if (product.id !== productId) return product;
+  //       // const newQty=
+  //       const productWithStock: ProductWithStock = {
+  //         ...product,
+  //         quantity: product.quantity - quantity,
+  //       };
+  //       // console.log({ prev: product.quantity, new: productWithStock.quantity });
+  //       return productWithStock;
+  //     });
+  //   })
+  // );
+  //}
+
   onDelete(sale: SaleModel) {
     if (window.confirm("Are you sure to delete?")) {
       this.saleStore.deleteSale(sale.id);
+      this._updateProductListQuantity();
     }
   }
 
