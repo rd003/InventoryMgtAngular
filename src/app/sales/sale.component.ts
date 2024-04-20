@@ -47,12 +47,12 @@ import { SalePaginatorComponent } from "./ui/sale-paginator.component";
           <mat-spinner diameter="50"></mat-spinner>
         </div>
         } @else {
+        <app-sale-filters
+          (clearFilter)="onClearFilter()"
+          (searchProduct)="onSearch($event)"
+          (filterByPurchaseDate)="onDateFilter($event)"
+        />
         <div *ngIf="vm.sales && vm.sales.length > 0; else no_records">
-          <app-sale-filters
-            (clearFilter)="onClearFilter()"
-            (searchProduct)="onSearch($event)"
-            (filterByPurchaseDate)="onDateFilter($event)"
-          />
           <app-sale-list
             [sales]="vm.sales"
             (edit)="onAddUpdate('Update', $event, products)"
@@ -115,10 +115,10 @@ export class SaleComponent implements OnDestroy {
         //console.log(submittedSale);
         if (submittedSale.id && submittedSale.id > 0) {
           // update book
-          this.saleStore.updateSale(submittedSale);
+          // this.saleStore.updateSale(submittedSale);
         } else {
           // add book
-          this.saleStore.addSale(submittedSale);
+          //this.saleStore.addSale(submittedSale);
         }
         this._updateProductListQuatity(
           submittedSale.productId,
@@ -134,10 +134,12 @@ export class SaleComponent implements OnDestroy {
       map((products) => {
         return products.map((product) => {
           if (product.id !== productId) return product;
-          return {
+          const newState: ProductWithStock = {
             ...product,
             quantity: product.quantity - quantity,
           };
+          console.log({ prev: product.quantity, new: newState.quantity });
+          return newState;
         });
       })
     );
