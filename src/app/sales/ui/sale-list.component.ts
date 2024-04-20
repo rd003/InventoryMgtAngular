@@ -72,6 +72,11 @@ import { SaleModel } from "../../category/sale.model";
         </td>
       </ng-container>
 
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef>Description</th>
+        <td mat-cell *matCellDef="let sale">{{ sale.description }}</td>
+      </ng-container>
+
       <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef>Action</th>
         <td mat-cell *matCellDef="let sale">
@@ -117,6 +122,7 @@ export class SaleListComponent {
     "price",
     "quantity",
     "totalPrice",
+    "description",
     "action",
   ];
 
